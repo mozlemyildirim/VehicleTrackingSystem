@@ -1,0 +1,31 @@
+﻿@{
+
+    Layout = null;
+}
+@model List<VeraDAL.Entities.Route>
+<table class="table mt-2 table-bordered table-striped font-10">
+    <thead>
+        <tr>
+            <th style="width:30px;"> </th>
+            <th style="width:30px;"> </th>
+            <th style="width:30px;"> </th>
+            <th style="width:30px;"> </th>
+            <th>Rota Adı </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td><center><a href="javascript:;" title="İlişkili Araçlar" onclick="RelatedVehiclesRoute(@item.Id, '@item.Name')" id="routeDevicesBTN"><i class="fa fa-car"></i></a></center></td>
+            <td><center><a href="javascript:;" title="Haritada Göster" onclick="ShowRouteOnMap(@item.Id,'@item.Name')"><i class="fa fa-map"></i></a></center></td>
+            <td><center><button onclick="GetCompanyRouteById(@item.Id)" class="btn btn-dark btn-sm">Güncelle</button></center></td>
+            <td><center><button onclick="DeleteCompanyRoute(@item.Id)" class="btn btn-dark btn-sm">Sil</button></center></td>
+            <td>@item.Name</td>
+        </tr>
+        }
+    </tbody>
+</table>
+<script>
+
+</script>

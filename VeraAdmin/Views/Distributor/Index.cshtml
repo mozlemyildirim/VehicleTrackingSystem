@@ -1,0 +1,443 @@
+﻿@model DistributorViewModel
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+	var activeUser = ViewBag.ActiveUser as VeraDAL.Entities.User;
+
+}
+
+
+
+
+<div class="row  " style="padding: 15px !important; ">
+	<div class="portlet light bordered" >
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <div class="col-md-12 col-xs-12">
+                    <i class="icon-settings font-dark"></i>
+                    <span class="caption-subject bold uppercase"><b>Bayi Bilgileri</b></span>
+                </div>
+            </div>
+
+
+            <div class="tools">    </div>
+            <div class="col-md-12 col-xs-12">
+
+                <br />
+                @{
+                    if (activeUser.UserTypeId == 3)
+                    {
+                        <button onclick="ShowDistributorModal()" class="btn btn-lg btn-info rounded-2 table-group-action-submit">
+                            <i class="fa fa-plus"></i> Bayi Ekle      
+                        </button>
+                    }   /*user restriction*/
+                }
+                <h4 style=" margin-top: 15px; margin-bottom: 15px;">Arama Kriterleri</h4>
+            </div>
+     
+
+            <div id="id" value="0" style="display:none;"></div>
+            <div id="userId" value="0" style="display:none;"></div>
+
+
+            <div class="col-md-12">
+                <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+
+                    <div class="col-md-1" style="margin-top:15px;">
+                        <label style="margin-bottom: 0px !important; font-size: 15px;"><b>Bayi Adı</b>:</label>
+                    </div>
+                    <div class="col-md-2" style="margin-top:15px;">
+                        <input id="bayiAdi" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;" />
+                    </div>
+                    <div class="col-md-1" style="margin-top:15px;">
+                        <button onclick="getList()" class="btn btn-primary rounded-3 table-group-action-submit">
+                            <i class="fa fa-check"></i> Listele
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		@*table container*@ 
+        <div class="portlet-body" id="tableContainer">
+
+        </div>
+
+ 		<div class="portlet-body" id="loadingContainer" style="display: none; margin-top: 15px; margin-bottom: 15px;">
+			<center>
+				<img style="width: 100px;" src="https://thumbs.gfycat.com/ObviousQuarrelsomeIntermediateegret-size_restricted.gif" />
+			</center>
+		</div>
+	</div>
+</div> @*filtering distributor*@
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content modal-lg">
+			<div class="modal-header">
+				<h3 class="modal-title text-center modal-lg" id="exampleModalLongTitle"><b>Bayi Bilgileri</b></h3>
+				<button style="margin-top: -18px !important;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body modal-lg">
+                <div class="form-body">
+                    <div class="col-md-4 col-sm-12" style="margin-top:15px;">
+                        <div class="form-group">
+                            <label> İş Ortağı </label>
+                            <select id="companyPartnerId" class="form-control input-sm">
+                                <option value="0">Seçiniz ...</option>
+                                @foreach (var item in Model.CompanyPartners)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>* Bayi Adi</label>
+                            <input id="name" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Bayi Giriş Tarihi</label>
+                            <div class="input-group input-medium" style="width:100% !important;">
+                                <input id="entranceDate" type="date" value="" style="height:30px;" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Bayi Çıkış Tarihi</label>
+                            <div class="input-group input-medium" style="width:100% !important;">
+                                <input id="exitDate" type="date" value="" style="height:30px;" class="form-control">
+                                @*<span class="input-group-btn">
+                        <button style="height:30px;" class="btn default" type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>*@
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label> Aktiflik </label>
+                            <select id="activity" class="form-control input-sm">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Telefon 1</label>
+                            <input id="phone1" type="text" class="form-control input-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12" style="margin-top:15px;">
+
+                        <div class="form-group">
+                            <label>Telefon 2</label>
+                            <input id="phone2" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fax</label>
+                            <input id="fax" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label> Sehir</label>
+                            <input id="city" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Bayi Yetkilisi</label>
+                            <input id="personInCharge" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Bayi Kodu</label>
+                            <input id="code" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Adres</label>
+                            <input id="address" type="text" class="form-control input-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12" style="margin-top:15px;">
+
+                        <div class="form-group">
+                            <label> * Kullanıcı Kodu </label>
+                            <input id="userCode" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label> * Kullanıcı Şifresi </label>
+                            <input id="userPassword" type="password" class="form-control input-sm" />
+                        </div>
+
+
+                        <div class="form-group">
+                            <label> * Kullanıcı Adı </label>
+                            <input id="userName" type="text" class="form-control input-sm" />
+                        </div>
+
+
+                        <div class="form-group">
+                            <label> * Kullanıcı Soyadı </label>
+                            <input id="userSurname" type="text" class="form-control input-sm" />
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>  Kullanıcı E-Mail </label>
+                            <input id="userEmail" type="email" placeholder="example@@gmail.com" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>  Kullanıcı Telefonu </label>
+                            <input id="userPhone" type="text" class="form-control input-sm" />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" style="text-align: unset;">
+                        <button type="button" onclick="SaveDistributor();" style="float:right; margin-left:35%; margin-top:23px;" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div> @*distributor modal form*@
+
+<script>
+	function ShowDistributorModal() {
+		$("#exampleModalCenter input[type='text']").val('');
+		$("#exampleModalCenter select").val('0');
+		$("#exampleModalCenter input[type='checkbox']").prop("checked", false);
+		$("#exampleModalCenter input[type='date']").val('');
+		$('#exampleModalCenter').modal('show');
+	}
+	 $(document).ready(function () {
+        getList(true);
+	 });
+    function SaveDistributor() { 
+		debugger;
+        var id = $("#id").val();
+		var name = $("#name").val();
+		var companyPartnerId = $("#companyPartnerId").val();
+		var entranceDate = $("#entranceDate").val();
+		var exitDate = $("#exitDate").val();
+		var activity = $("#activity").val();
+		var phone1 = $("#phone1").val();
+		var phone2 = $("#phone2").val();
+		var fax = $("#fax").val();
+		var city = $("#city").val();
+		var personInCharge = $("#personInCharge").val();
+		var code = $("#code").val();
+		var address = $("#address").val();
+		var userCode = $("#userCode").val();
+		var userId = $("#userId").val();
+		var userPassword = $("#userPassword").val();
+		var userName = $("#userName").val();
+		var userSurname = $("#userSurname").val();
+		var userEmail = $("#userEmail").val();
+		var userPhone = $("#userPhone").val(); 
+        if (name == "" || userCode == "" || userPassword == "" || userName == "" || userSurname == "" ) {
+            swal('Hata!', 'Lütfen yıldızlı(*) alanları boş bırakmayınız!!', 'error');
+            return;
+		}
+		
+		if (userPhone!="" && isNaN(userPhone)) {
+			swal('Hata!', 'Lütfen telefon numarasını doğru giriniz..', 'error');
+			return;
+		}
+		if (phone1!="" && isNaN(phone1)) {
+			swal('Hata!', 'Lütfen telefon numarasını doğru giriniz..', 'error');
+			return;
+		}
+		if (phone2!="" && isNaN(phone2)) {
+			swal('Hata!', 'Lütfen telefon numarasını doğru giriniz..', 'error');
+			return;
+		}
+		if (userEmail != "" && !(userEmail.includes('@@'))) { 
+			swal('Hata!', 'Lütfen E-mail"i doğru giriniz...', 'error');
+			return;
+		}
+	var canSave = false; 
+		if (userCode.length >= 3) {
+			if (id == 0) {
+				$.ajax({
+					url: '@Url.Action("CheckIfUserExist", "Distributor")',
+					type: 'POST',
+					dataType: 'json',
+					async: false,
+					data: {
+						"_userCode": userCode
+					},
+					success: function (data) {
+						if (data) {
+							swal('Hata!', 'User içeride var', 'error');
+							canSave = false;
+						}
+						else {
+							canSave = true;
+						}
+					},
+					error: function (err) {
+						swal('Hata!', 'Lütfen geçerli yetkili kodu giriniz !', 'error');
+					}
+				});
+			}
+			else {
+				canSave = true;
+			}
+		} 
+		if (!canSave) {
+			return;
+		} 
+		$.ajax({ 
+			url: '@Url.Action("SaveDistributor", "Distributor")',
+			type:'POST',
+			dataType: 'json',
+			data: {
+				"_id": id,
+				"_name": name,
+				"_companyPartnerId": companyPartnerId,
+				"_entranceDate": entranceDate,
+				"_exitDate": exitDate,
+				"_activity": activity,
+				"_phone1": phone1,
+				"_phone2": phone2,
+				"_fax": fax,
+				"_city": city,
+				"_personInCharge": personInCharge,
+				"_code": code,
+				"_address": address,
+				 "_userId": userId,
+				"_userCode": userCode,
+				"_userPassword": userPassword,
+				"_userName": userName,
+				"_userSurname": userSurname,
+				"_userEmail": userEmail,
+				"_userPhone": userPhone
+			},
+			success: function (data) {
+			if (data) {
+				console.log(data);
+				      swal('Başarılı!', 'Bayi Kaydedildi!', 'success')
+                        .then((value) => {
+                            window.location.reload();
+                        });
+					}
+				}
+			});
+	} 
+	function getList(isDefault = false) {
+		$("#tableContainer").html('');
+        $("#loadingContainer").show();
+		 bayiAdi = $('#bayiAdi').val();
+         $.ajax({
+            url: '@Url.Action("GetDistributorList", "Distributor")',
+            type: 'POST',
+            dataType: 'html',
+            data: {
+              _bayiAdi : (isDefault ? "" : bayiAdi)
+            },
+			 success: function (data) {
+                 $("#loadingContainer").hide();
+                $("#tableContainer").html(data);
+            }
+        });
+	} 
+	function GetDistributorByIdForDisplaying(id) {
+		$.ajax({
+				url: '@Url.Action("GetDistributorByIdForDisplaying", "Distributor")',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					"_id": id
+			 },
+			success: function (data) {
+			console.log(data);
+					$("#exampleModalCenter").modal('show');
+					$("#id").val(data["Id"]);
+					$("#name").val(data["Name"]);
+					$("#companyPartnerId").val(data["CompanyPartnerId"]);
+					$("#entranceDate").val((data["EntranceDate"] == null ? "" : data["EntranceDate"].split('T')[0]));
+					$("#exitDate").val((data["ExitDate"] == null ? "" : data["ExitDate"].split('T')[0]));
+					$("#activity").val(data["Activity"]==true?1:0);
+					$("#phone1").val(data["Phone1"]);
+					$("#phone2").val(data["Phone2"]);
+					$("#fax").val(data["Fax"]);
+					$("#city").val(data["City"]);
+					$("#personInCharge").val(data["PersonInCharge"]);
+					$("#code").val(data["Code"]);
+					$("#address").val(data["Address"]);
+					$("#userCode").val(data["UserCode"]);
+					$("#userPassword").val(data["UserPassword"]);
+					$("#userName").val(data["UserName"]);
+					$("#userSurname").val(data["UserSurname"]); ;
+					$("#userEmail").val(data["UserEmail"]); ;
+					$("#userPhone").val(data["UserTelephone"]); ;
+					$("#userId").val(data["UserId"]); ;
+           		 }
+			});
+	} 
+	function DeleteDistributor(id) {
+			swal({
+			title: "Emin misiniz?",
+			text: "Bu bayiyi silerseniz geri alamayacaksınız!",
+			icon: "warning",
+			buttons: [
+				'Hayır,iptal et!',
+				'Evet , eminim!'
+			],
+			dangerMode: true,
+		}).then(function (isConfirm) {
+			if (isConfirm) {
+			$.ajax({
+				url: '@Url.Action("DeleteDistributor", "Distributor")',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+				"_id": id
+			 },
+			success: function (data) {
+			    if (data) {
+                    swal('Successful!', 'Bayi Silindi!', 'success')
+                        .then((value) => {
+                            window.location.reload();
+                        });
+                }
+           }
+			});
+			}
+		}) 
+	} 
+</script> @*crud operations*@
+
+<script>
+	function getOffset(el) {
+		var _x = 0;
+		var _y = 0;
+		while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+			_x += el.offsetLeft - el.scrollLeft;
+			_y += el.offsetTop - el.scrollTop;
+			el = el.offsetParent;
+		}
+		return { top: _y, left: _x };
+	}
+
+	function showSubMenu(elem) {
+		$("#rightClickMenuContainer").fadeIn(250);
+		var objOffset = getOffset(elem);
+		var height = $("#rightClickMenu").height();
+		var toptop = 0;
+		$("#rightClickMenu").css("margin-top", (objOffset.top - parseInt($("#rightClickMenu").height())));
+
+		$("#rightClickMenu").css("margin-left", objOffset.left + 20);
+	}
+</script> @*settingsMenuPosition*@

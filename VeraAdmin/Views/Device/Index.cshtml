@@ -1,0 +1,1012 @@
+﻿
+@{
+	ViewData["Title"] = "Cihaz Bilgileri";
+}
+@model DeviceViewModel
+
+@{
+	var activeUser = ViewBag.ActiveUser as VeraDAL.Entities.User;
+} 
+ 
+@*KM SET*@
+<div class="modal fade" id="setKmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
+	 aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header text-center">
+				<h4 class="modal-title w-100 font-weight-bold">Km Set Etme</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body mx-3">
+				<div class="form-group">
+					<label>Km :</label>
+					<input id="kmToSet" type="text" class="form-control input-sm" />
+				</div>
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<button type="button" onclick="SaveKmOfDevice()" class="btn btn-default">KAYDET</button>
+			</div>
+		</div>
+	</div>
+</div> 
+
+<div class="row" style="padding: 15px !important;">
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject bold uppercase">Cihaz Bilgileri</span>
+            </div>
+            <div class="tools"> </div>
+        </div>
+        <div class="col-md-12">
+            <h4 style="display: inline-block; margin-top: 15px; margin-bottom: 15px;">Arama Kriterleri</h4>
+        </div>
+
+        <input id="id" value="0" style="display: none" />
+
+        <div class="col-md-4 col-ld-4 col-ms-12">
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Cihaz Id</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <input id="cihazId" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;" />
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Cihaz Gsm No</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <input id="cihazGsmNo" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;" />
+                </div>
+            </div>
+
+
+
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Plaka</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <input id="plaka" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;" />
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Şirket</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <select id="sirket" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                        <option value="0">Hepsi</option>
+                        @foreach (var item in Model.Companies.OrderBy(x=>x.CompanyDescription))
+                        {
+                            <option value="@item.Id">@item.CompanyDescription</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-ld-4 col-ms-12">
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Firma Tipi</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <select id="firmaTipi" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                        <option value="0">Hepsi</option>
+                        @foreach (var item in Model.CompanyTypes)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Kullanım Durumu</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <select id="kullanimDurumu" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                        <option value="0">Hepsi</option>
+                        @foreach (var item in Model.UsingStatus)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Aktiflik</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <select id="aktiflik" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                        <option value="-1">Hepsi</option>
+                        <option value="1">Aktif</option>
+                        <option value="0">Pasif</option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Cihaz Montaj Türü</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <select id="cihazMontajTuru" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                        <option value="0">Cihaz Montaj Türü</option>
+                        @foreach (var item in Model.DeviceMontageTypes)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-ld-4 col-ms-12">
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Terminal Tipi</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <select id="terminalTipId" onchange="getSoftwareVersionsByTerminalTypeId2()" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                        <option value="0">Terminal Tipi</option>
+                        @foreach (var item in Model.TerminalTypes)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Yazılım Versiyonu</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <select id="yazılımVersionId" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;"></select>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="col-md-2 col-lg-3" style="height: 30px;">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <label style="margin-bottom: 0px !important; font-size: 13px;">Alt Firmalı Göster</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class="md-checkbox-inline">
+                        <div class="md-checkbox">
+                            <input type="checkbox" id="altFirmalıGoster" class="md-check">
+                            <label for="altFirmalıGoster">
+                                <span class="inc"></span>
+                                <span class="check"></span>
+                                <span class="box"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-lg-12">
+                <div class="row" style=" text-align: center;">
+                    <div class="col-md-2 col-lg-12">
+                        <button onclick="getList()" style="float:right" class="btn btn-primary rounded-3 table-group-action-submit">
+                            <i class="fa fa-check"></i> Listele
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @{
+            if (activeUser.UserTypeId != 1)
+            {
+                <button onclick="ShowDeviceModal()" class="btn btn-lg btn-info table-group-action-submit" style="float:left;">
+                    <i class="fa fa-plus"></i> Cihaz Ekle
+                </button>
+            }/*user login restriction*/
+        }
+        <div class="col-md-12">
+            <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                <input type="file" id="fileUploader" name="fileUploader" accept=".xls, .xlsx" style="display:none;" />
+                <button onclick="$('#fileUploader').click()" class="btn btn-secondary"> <i class="fa fa-plus fa-lg"></i>Excel Cihaz Ekle</button>
+                @*<button onclick="location.href='@Url.Action("ExportFile","Device")'" class="btn btn-secondary"> <i class="fa fa-file-excel-o fa-lg"></i>  Excel'e Aktar</button>*@
+                <hr />
+            </div>
+
+
+
+
+        </div>
+        <div class="portlet-body" id="tableContainer" style="overflow-y:auto;">
+
+        </div>
+        <div class="portlet-body" id="loadingContainer" style="display: none; margin-top: 15px; margin-bottom: 15px;">
+            <center>
+                <img style="width: 100px;" src="https://thumbs.gfycat.com/ObviousQuarrelsomeIntermediateegret-size_restricted.gif" />
+            </center>
+        </div>
+    </div>
+    </div> @*device filtering*@
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content modal-lg">
+			<div class="modal-header">
+				<h3 class="modal-title text-center modal-lg" id="exampleModalLongTitle"><b>Cihaz Bilgileri</b></h3>
+				<button style="margin-top: -18px !important;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body modal-lg">
+				<div class="form-body">
+					<div class="col-md-3 col-sm-12" style="margin-top:15px;">
+						<div class="form-group">
+							<label> <strong>*</strong> Şirket </label>
+							<select id="companyId" class="form-control input-sm">
+								<option value="0">Seçiniz...</option>
+								@foreach (var item in Model.Companies)
+								{
+									<option value="@item.Id">@item.CompanyDescription</option>
+								}
+
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label><strong>*</strong> Plaka</label>
+							<input id="carPlateNumber" type="text" class="form-control input-sm" />
+						</div>
+
+						<div class="form-group">
+							<label><strong>*</strong> Cihaz ID(Comm_id)</label>
+							<input id="deviceId" type="text" class="form-control input-sm" />
+						</div>
+
+						<div class="form-group">
+							<label><strong>*</strong> Cihaz Gsm No</label>
+							<input id="deviceGsmNumber" type="text" class="form-control input-sm" />
+						</div>
+
+
+						<div class="form-group">
+							<label> <strong>*</strong> Terminal Protokol </label>
+							<select id="terminalProtocolId" class="form-control input-sm">
+								<option value="0">Seçiniz...</option>
+								@foreach (var item in Model.TerminalProtocols)
+								{
+									<option value="@item.Id">@item.Name</option>
+								}
+
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label> <strong>*</strong> Gateway </label>
+							<select id="gatewayId" class="form-control input-sm">
+								<option value="0">Seçiniz...</option>
+								@foreach (var item in Model.Gateways)
+								{
+									<option value="@item.Id">@item.Name</option>
+								}
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label> <strong>*</strong> Terminal Tipi </label>
+							<select id="terminalTypeId" onchange="getSoftwareVersionsByTerminalTypeId()" class="form-control input-sm">
+								<option value="0">Seçiniz...</option>
+								@foreach (var item in Model.TerminalTypes)
+								{
+									<option value="@item.Id">@item.Name</option>
+								}
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label> <strong>*</strong> Yazılım Versiyonu </label>
+							<select id="softwareVersionId" class="form-control input-sm"></select>
+						</div>
+						<div class="form-group">
+							<label><strong>*</strong> IMEI No</label>
+							<input id="IMEINumber" type="text" class="form-control input-sm" />
+						</div>
+						<div class="form-group">
+							<label> RFID Motor Blokaj </label>
+							<select id="rfidEngineBlock" class="form-control input-sm">
+								<option value="1">Var </option>
+								<option value="0">Yok</option>
+							</select>
+						</div>
+
+					</div>
+                    <div class="col-md-3 col-sm-12" style="margin-top:15px;">
+                        <div class="form-group">
+                            <label> RFID Motor Blokaj Durum </label>
+                            <select id="rfidEngineBlockStatus" class="form-control input-sm">
+                                <option value="1">Var</option>
+                                <option value="0">Yok</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Trafik Verisi</label>
+                            <select id="trafficData" class="form-control input-sm">
+                                <option value="1">Trafik verisi üretebilir</option>
+                                <option value="0">Trafik verisi üretemez</option>
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sabit Mobil</label>
+                            <select id="constantMobile" class="form-control input-sm">
+                                <option value="1">Evet</option>
+                                <option value="0">Hayır</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sabit Lat.(DD.DDDDDD)</label>
+                            <input id="constantLatitude" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Sabit Long.(DD.DDDDDD)</label>
+                            <input id="constantLongitude" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Wochecker Flag</label>
+                            <select id="wocheckerFlagId" class="form-control input-sm">
+                                @foreach (var item in Model.WocheckerFlags)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>*Aktiflik Süresi(dk)</label>
+                            <input id="activityTime" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Muhasebe Hesap Kodu</label>
+                            <input id="accountingCode" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label> Kullanım Durumu </label>
+                            <select id="usingStatusId" class="form-control input-sm">
+                                @foreach (var item in Model.UsingStatus)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Araç Tipi</label>
+                            <select id="vehicleTypeId" class="form-control input-sm">
+                                @foreach (var item in Model.Vehicles)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+					<div class="col-md-3 col-sm-12" style="margin-top:15px;">
+						<div class="form-group">
+							<label> Yaz Saati </label>
+							<select id="isSummerTime" class="form-control input-sm">
+								<option value="1">Evet</option>
+								<option value="0">Hayır</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Saat Farkı</label>
+							<input id="timeDifference" type="text" class="form-control input-sm" />
+						</div>
+
+
+
+						<div class="form-group">
+							<label>Sefer</label>
+							<select id="journey" class="form-control input-sm">
+								<option value="1">Var</option>
+								<option value="0">Yok</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label>Mesajlaşma</label>
+							<select id="messagingId" class="form-control input-sm">
+								@foreach (var item in Model.Messagings)
+								{
+									<option value="@item.Id">@item.Name</option>
+								}
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label>Telemetri</label>
+							<select id="telemetry" class="form-control input-sm">
+								<option value="1">Var</option>
+								<option value="0">Yok</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label>Ref. Telemetri Reçetesi</label>
+							<select id="refTelemetryRecipeId" class="form-control input-sm">
+								@foreach (var item in Model.RefTelemetryTypes)
+								{
+									<option value="@item.Id">@item.Name</option>
+								}
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Servis Tipi</label>
+							<select id="serviceTypeId" class="form-control input-sm">
+								@foreach (var item in Model.ServiceTypes)
+								{
+									<option value="@item.Id">@item.Name</option>
+								}
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Kapı Sensörü</label>
+							<select id="doorSensor" class="form-control input-sm">
+								<option value="1">Var</option>
+								<option value="0">Yok</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Isı Sensörü</label>
+							<select id="heatSensor" class="form-control input-sm">
+								<option value="1">Var</option>
+								<option value="0">Yok</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label>Motor Blokajı</label>
+							<select id="engineBlock" class="form-control input-sm">
+								<option value="1">Var</option>
+								<option value="0">Yok</option>
+							</select>
+						</div>
+
+
+					</div>
+                    <div class="col-md-3 col-sm-12" style="margin-top:15px;">
+                        <div class="form-group">
+                            <label>Programlanan Konum Süresi(dk)</label>
+                            <input id="programmedLocationSendTime" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Programlanan Konum Mesafe(mt)</label>
+                            <input id="programmedLocationDistance" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>* Programlanan Hız Limiti(km)</label>
+                            <input id="programmedSpeedLimit" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Programlanan Bekleme(dk)</label>
+                            <input id="programmedWaitingTime" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Programlanan HeartBeat(sn)</label>
+                            <input id="programmedHeartBeat" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Cihaz Montaj Türü</label>
+                            <select id="deviceMontageTypeId" class="form-control input-sm">
+                                @foreach (var item in Model.DeviceMontageTypes)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group form-md-checkboxes">
+                            <label>G Sensör</label>
+                            <div class="md-checkbox-inline">
+                                <div class="md-checkbox">
+                                    <input type="checkbox" id="GSensor" class="md-check">
+                                    <label for="GSensor">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group form-md-checkboxes">
+                            <label>Sürücü Skorlama</label>
+                            <div class="md-checkbox-inline">
+                                <div class="md-checkbox">
+                                    <input type="checkbox" id="driverScoring" class="md-check">
+                                    <label for="driverScoring">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="SaveDevice();" style=" margin-left:35%; margin-top:23px;" class="btn btn-primary">Kaydet</button>
+                        </div>
+                    </div>
+					<div class="modal-footer" style="text-align: unset;">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> @*modal form*@
+<script>
+     $(document).ready(function () {
+        /*getList*/(true);
+	 });
+	function ShowDeviceModal() {
+		$("#exampleModalCenter input[type='text']").val('');
+		$("#exampleModalCenter select").val('0');
+		$("#exampleModalCenter input[type='checkbox']").prop("checked", false)
+		$('#exampleModalCenter').modal('show');
+	}
+	function SaveDevice() {
+		 
+		
+		var id =$("#id").val();
+		var companyId  =$("#companyId").val();
+		var deviceMontageTypeId  =$("#deviceMontageTypeId").val();
+		var softwareVersionId= $("#softwareVersionId").val();
+		var usingStatusId =$("#usingStatusId").val();
+		var messagingId =$("#messagingId").val();
+		var refTelemetryRecipeId=$("#refTelemetryRecipeId").val();
+		var serviceTypeId  =$("#serviceTypeId").val();
+		var wocheckerFlagId  =$("#wocheckerFlagId").val();
+		var vehicleTypeId  =$("#vehicleTypeId").val();
+		var deviceId =$("#deviceId").val();
+		var terminalProtocolId =$("#terminalProtocolId").val();
+		var terminalTypeId =$("#terminalTypeId").val();
+		var gatewayId=$("#gatewayId").val();
+		var carPlateNumber=$("#carPlateNumber").val();
+		var deviceGsmNumber=$("#deviceGsmNumber").val();
+		var rfidEngineBlock=$("#rfidEngineBlock").val();
+		var rfidEngineBlockStatus=$("#rfidEngineBlockStatus").val();
+		var programmedLocationSendTime=$("#programmedLocationSendTime").val();
+		var programmedLocationDistance =$("#programmedLocationDistance").val();
+		var programmedSpeedLimit =$("#programmedSpeedLimit").val();
+		var programmedWaitingTime =$("#programmedWaitingTime").val();
+		var programmedHeartBeat = $("#programmedHeartBeat").val();
+		var activityTime=$("#activityTime").val();
+		var cameraURL  =$("#cameraURL").val();
+		var isSummerTime  =$("#isSummerTime").val();
+		var timeDifference  = $("#timeDifference").val();
+		var IMEINumber  =$("#IMEINumber").val();
+		var journey=$("#journey").val();
+		var telemetry =$("#telemetry").val();
+		var doorSensor  =$("#doorSensor").val();
+		var heatSensor   =$("#heatSensor").val();
+		var engineBlock  =$("#engineBlock").val();
+		var trafficData  =$("#trafficData").val();
+		var constantMobile =$("#constantMobile").val();
+		var constantLatitude =$("#constantLatitude").val();
+		var constantLongitude=  $("#constantLongitude").val();
+		var GSensor = $("#GSensor").is(':checked');
+		var driverScoring=$("#driverScoring").is(':checked');
+		var accountingCode = $("#accountingCode").val();
+		 
+
+		
+		if (programmedSpeedLimit=="" ||activityTime=="" ||companyId =="" || carPlateNumber == "" || deviceId == "" || deviceGsmNumber == "" || terminalProtocolId == "" || gatewayId == "" || terminalTypeId == "" || softwareVersionId == "" || IMEINumber == "") {
+			swal('Hata!', 'Lütfen yıldızlı(*) alanları boş bırakmayınız!!', 'error');
+			return;
+		}
+		   $.ajax({
+            url: '@Url.Action("SaveDevice", "Device")',
+            type: 'POST',
+            dataType: 'json',
+             data: {
+			    "_id":id ,
+				"_companyId":companyId ,
+				"_deviceMontageTypeId":deviceMontageTypeId ,
+				"_softwareVersionId":softwareVersionId ,
+				"_usingStatusId":usingStatusId ,
+				"_messagingId":messagingId ,
+				"_refTelemetryRecipeId":refTelemetryRecipeId ,
+				"_serviceTypeId":serviceTypeId ,
+				"_wocheckerFlagId":wocheckerFlagId ,
+				"_vehicleTypeId":vehicleTypeId ,
+				"_deviceId":deviceId ,
+				"_terminalProtocolId":terminalProtocolId ,
+				"_terminalTypeId": terminalTypeId,
+				"_gatewayId":gatewayId ,
+				"_carPlateNumber":carPlateNumber ,
+				"_deviceGsmNumber":deviceGsmNumber ,
+				"_rfidEngineBlock":rfidEngineBlock ,
+				"_rfidEngineBlockStatus":rfidEngineBlockStatus ,
+				 "_programmedLocationSendTime": programmedLocationSendTime,
+				 "_programmedLocationDistance": programmedLocationDistance,
+				"_programmedSpeedLimit":programmedSpeedLimit ,
+				"_programmedWaitingTime":programmedWaitingTime ,
+				"_programmedHeartBeat":programmedHeartBeat ,
+				"_activityTime":activityTime ,
+				"_cameraURL":cameraURL ,
+				"_isSummerTime":isSummerTime ,
+				"_timeDifference":timeDifference ,
+				"_IMEINumber":IMEINumber ,
+				"_journey":journey ,
+				"_telemetry":telemetry ,
+				"_doorSensor":doorSensor ,
+				"_heatSensor": heatSensor,
+				"_engineBlock":engineBlock ,
+				"_trafficData":trafficData ,
+				"_constantMobile":constantMobile ,
+				"_constantLatitude":constantLatitude ,
+				"_constantLongitude":constantLongitude ,
+				"_GSensor":GSensor ,
+				"_driverScoring":driverScoring,
+			    "_accountingCode": accountingCode  
+            },
+            success: function (data) {
+                if (data) {
+                    swal('Başarılı!', 'Cihaz Kaydedildi!', 'success');
+                }
+            }
+        })
+	}
+
+	function getSoftwareVersionsByTerminalTypeId() {
+		var terminalTypeId = $("#terminalTypeId").val();
+
+		$.ajax({
+			url: '@Url.Action("GetSoftwareVersionsByTerminalTypeId", "Device")',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				"_terminalTypeId": terminalTypeId
+			},
+			success: function (data) {
+	debugger;
+				$("#softwareVersionId").html('');
+				for (var i = 0; i < data.length; i++) {
+					$("#softwareVersionId").append('<option value="' + data[i]["Id"] + '">' + data[i]["VersionCode"] + '</option>');
+				}
+			}
+		});
+	}
+	//filtreleme yaparken
+	function getSoftwareVersionsByTerminalTypeId2() {
+		var terminalTipId = $("#terminalTipId").val();
+
+		$.ajax({
+			url: '@Url.Action("GetSoftwareVersionsByTerminalTypeId", "Device")',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				"_terminalTypeId": terminalTipId
+			},
+			success: function (data) {
+	debugger;
+				$("#yazılımVersionId").html('');
+				for (var i = 0; i < data.length; i++) {
+					$("#yazılımVersionId").append('<option value="' + data[i]["Id"] + '">' + data[i]["VersionCode"] + '</option>');
+				}
+			}
+		});
+		}
+
+	function getList(isDefault = false) {
+		$("#tableContainer").html('');
+		$("#loadingContainer").show();
+		 cihazId = $("#cihazId").val();
+		 cihazGsmNo = $("#cihazGsmNo").val();
+		 plaka = $("#plaka").val();
+		 sirket = $("#sirket").val();
+		 kullanimDurumu = $("#kullanimDurumu").val();
+	     altFirmalıGoster =$("#altFirmalıGoster").is(':checked');
+		 aktiflik = $("#aktiflik").val();
+		 firmaTipi = $("#firmaTipi").val(); 
+		 terminalTipId = $("#terminalTipId").val();
+		 yazılımVersionId = $("#yazılımVersionId").val(); 
+		 cihazMontajTuru = $("#cihazMontajTuru").val();
+         $.ajax({
+            url: '@Url.Action("GetDeviceList", "Device")',
+            type: 'POST',
+            dataType: 'html',
+            data: {
+                "_cihazId": (isDefault ? "" : cihazId),
+                "_cihazGsmNo": (isDefault ? "" : cihazGsmNo),
+                "_plaka": (isDefault ? "" : plaka),
+                "_sirket": (isDefault ? "0" : sirket),
+				"_altFirmalıGoster": (isDefault ? "0" : (altFirmalıGoster == true ? 1 : 0)),
+				"_kullanimDurumu": (isDefault ? "0" : kullanimDurumu),
+				"_aktiflik": (isDefault ? "-1" : aktiflik),
+                "_firmaTipi": (isDefault ? "0" : firmaTipi), 
+                "_terminalTipId": (isDefault ? "0" : terminalTipId),
+                "_yazılımVersionId": (isDefault ? "0" : yazılımVersionId), 
+                "_cihazMontajTuru": (isDefault ? "0" : cihazMontajTuru)
+            },
+             success: function (data) {
+                 debugger;
+                 if (data == "false") {
+                     $("#loadingContainer").hide();
+                     data = "Eşleşen Cihaz Bulunamadı ...";
+                     $("#tableContainer").html(data);
+                     return;
+                 }
+                 $("#loadingContainer").hide();
+                 $("#tableContainer").html(data); 
+               
+            }
+        });
+	}
+
+	function GetDeviceById(id)
+	{
+		$.ajax({
+				url: '@Url.Action("GetDeviceById", "Device")',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+				"_id": id
+		 },
+		success: function (data) {
+		console.log(data);
+					$("#exampleModalCenter").modal('show');
+					$("#id").val(data["Id"]);
+					$("#companyId").val(data["CompanyId"]);
+					$("#deviceMontageTypeId").val(data["DeviceMontageTypeId"]);
+					$("#usingStatusId").val(data["UsingStatusId"]);
+					$("#messagingId").val(data["MessagingId"]);
+					$("#refTelemetryRecipeId").val(data["RefTelemetryRecipeId"]);
+					$("#serviceTypeId").val(data["ServiceTypeId"]);
+					$("#wocheckerFlagId").val(data["WocheckerFlagId"]);
+					$("#vehicleTypeId").val(data["VehicleTypeId"]);
+					$("#deviceId").val(data["DeviceId"]);
+					$("#terminalProtocolId").val(data["TerminalProtocolId"]);
+					$("#terminalTypeId").val(data["TerminalTypeId"]);
+					$("#terminalTypeId").trigger("onchange");
+					setTimeout(function () {
+						$("#softwareVersionId").val(data["SoftwareVersionId"]);
+					}, 750);
+					$("#gatewayId").val(data["GatewayId"]);
+					$("#carPlateNumber").val(data["CarPlateNumber"]);
+					$("#deviceGsmNumber").val(data["DeviceGsmNumber"]);
+					$("#rfidEngineBlock").val(data["RFIDEngineBlock"]==true?1:0);
+					$("#rfidEngineBlockStatus").val(data["RFIDEngineBlockStatus"]==true?1:0);
+					$("#programmedLocationSendTime").val(data["ProgrammedLocationSendTime"]);
+					$("#programmedLocationDistance").val(data["ProgrammedLocationDistance"]);
+					$("#programmedSpeedLimit").val(data["ProgrammedSpeedLimit"]);
+					$("#programmedWaitingTime").val(data["ProgrammedWaitingTime"]);
+					$("#programmedHeartBeat ").val(data["ProgrammedHeartBeat"]);
+					$("#activityTime").val(data["ActivityTime"]);
+					$("#cameraURL").val(data["CameraURL"]);
+					$("#isSummerTime").val(data["IsSummerTime"]==true?1:0);
+					$("#timeDifference").val(data["TimeDifference"]);
+					$("#IMEINumber").val(data["IMEINumber"]);
+					$("#journey").val(data["Journey"]==true?1:0);
+					$("#telemetry").val(data["Telemetry"]==true?1:0);
+					$("#doorSensor").val(data["DoorSensor"]==true?1:0);
+					$("#heatSensor").val(data["HeatSensor"]==true?1:0);
+					$("#engineBlock").val(data["EngineBlock"]==true?1:0);
+					$("#trafficData").val(data["TrafficData"]==true?1:0);
+					$("#constantMobile").val(data["ConstantMobile"]==true?1:0);
+					$("#constantLatitude").val(data["ConstantLatitude"]);
+					$("#constantLongitude").val(data["ConstantLongitude"]);
+					$("#accountingCode").val(data["AccountingCode"]);  
+					$("#GSensor").prop("checked", data["GSensor"]);
+					$("#driverScoring").prop("checked", data["DriverScoring"]);
+ 
+           		 }
+			});
+ 	}
+
+	function DeleteDevice(id) {
+			swal({
+			title: "Emin misiniz?",
+			text: "Bu cihazı silerseniz geri alamayacaksınız!",
+			icon: "warning",
+			buttons: [
+				'Hayır, iptal et!',
+				'Evet , eminim!'
+			],
+			dangerMode: true,
+		}).then(function (isConfirm) {
+			if (isConfirm) {
+			$.ajax({
+				url: '@Url.Action("DeleteDevice", "Device")',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+				"_id": id
+			 },
+			success: function (data) {
+			    if (data) {
+                    swal('Successful!', 'Cihaz Silindi!', 'success');
+                } 
+           		 }
+			});
+			}
+		}) 
+	} 
+</script> @*crud operations*@
+<script>
+	function uploadFile()  {
+		debugger;
+				var formData = new FormData();
+				formData.append('file', $('#myfile')[0].files[0]); // myFile is the input type="file" control
+
+			var _url = '@Url.Action("UploadFile", "Device")';
+
+			$.ajax({
+				url: _url,
+				type: 'POST',
+				data: formData,
+				processData: false,  // tell jQuery not to process the data
+				contentType: false,  // tell jQuery not to set contentType
+				success: function (result) {
+					   if (result) {
+                           swal('Başarılı!', 'Cihazlar Kaydedildi!', 'success');
+					}
+					   else {
+						   swal('Hata!', 'Dosya Kaydedilemedi ...', 'error');
+					   }
+				},
+				error: function (jqXHR) { 
+				},
+				complete: function (jqXHR, status) {
+				}
+			});
+    }
+
+    $(document).ready(function () {
+        $("#fileUploader").change(function (evt) {
+            var selectedFile = evt.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var data = event.target.result;
+                var workbook = XLSX.read(data, {
+                    type: 'binary'
+                });
+                workbook.SheetNames.forEach(function (sheetName) {
+
+                    var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                    var json_object = JSON.stringify(XL_row_object);
+
+                    $.ajax({
+                        url: '@Url.Action("ImportFile", "Device")',
+                        type: 'POST',
+                        dataType: 'json',
+                        async: false,
+                        data: {
+                            "_excelData": json_object
+                        },
+                        success: function (data) {
+                            if (data) {
+                                swal("Başarılı !", "Cihazlar Kaydedildi..", "success");
+                            }
+                        }
+                    });
+                })
+            };
+
+            reader.onerror = function (event) {
+                console.error("File could not be read! Code " + event.target.error.code);
+            };
+
+            reader.readAsBinaryString(selectedFile);
+        });
+    }); 
+</script>  @*uploadFile*@
+<script>
+	function getOffset(el) {
+		var _x = 0;
+		var _y = 0;
+		while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+			_x += el.offsetLeft - el.scrollLeft;
+			_y += el.offsetTop - el.scrollTop;
+			el = el.offsetParent;
+		}
+		return { top: _y, left: _x };
+    } 
+    var lastOptionClickedDeviceId = 0;
+    function showSubMenu(deviceId, elem) {
+        lastOptionClickedDeviceId = deviceId;
+		$("#rightClickMenuContainer").fadeIn(250);
+		var objOffset = getOffset(elem);
+		var height = $("#rightClickMenu").height();
+		var toptop = 0;
+		$("#rightClickMenu").css("margin-top", (objOffset.top - parseInt($("#rightClickMenu").height())));
+
+		$("#rightClickMenu").css("margin-left", objOffset.left + 30);
+    }
+ 
+</script> @*settingsMenuPosition*@
+ 

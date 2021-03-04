@@ -1,0 +1,127 @@
+﻿@model Dictionary<VeraDAL.DB.SORKeyClass, List<VeraDAL.DB.SeferOzetiRaporuObjectRepo>>
+
+@{
+    Layout = null;
+}
+@*<script src="~/Content/assets/plugins/jquery/jquery.min.js"></script>*@
+<script src="~/Content/assets/plugins/jquery/printThis.js"></script>
+
+<script>
+</script>
+<!--replacepoint-->
+
+<div id="exportSORDiv" style="width: 100%; height: 100%;" frameborder="0">
+
+    <style>
+        body {
+            font-family: Verdana !important;
+            color: black;
+        }
+
+        h5 {
+            color: black;
+        }
+    </style>
+
+
+    <div class="col-md-12">
+        <!--replacepoint1-->
+        <button id="pdfBtn" type="button" onclick="$('#exportSORDiv').printThis();"
+                style="float:right; width:200px; border:none;
+                color:black; padding:20px; text-align:center;
+                text-decoration:none; display:inline-block;
+                font-size:16px;margin:4px 2px;cursor:pointer;
+                border-radius:8px; font-weight:bold">
+            PDF İNDİR
+        </button>
+        <!--replacepoint2-->
+        <h1 style="text-align:center;">SEFER ÖZETİ RAPORU</h1>
+        <div class="row">
+            <div class="col-md-12">
+                <h5>Tarih :@ViewBag.Tarih</h5>
+                <h5>Süre :  @ViewBag.Sure </h5>
+                <p>Araç Sayısı: @Model.Count</p>
+            </div>
+        </div>
+    </div>
+
+
+
+    @{
+        foreach (var item in Model)
+        {
+            <div style="background-color:#a9a9a961; border-top-left-radius:7px; border-bottom-right-radius:7px; margin-top:15px;">
+                <table class="table-bordered table" border="1" style="font-size: 12px; border-collapse: collapse; font-family: Verdana; width: 100%; border:1px solid black; text-align: center; background-color:#e8e7e4;">
+                    <tbody>
+                        <tr>
+                            <td style="font-size:20px;" colspan="3">Grup</td>
+                            <td style="font-size:20px;" colspan="5">Mobil Tanımı</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:17px;" colspan="3">@item.Key.Grup</td>
+                            <td style="font-size:17px;" colspan="5">@item.Key.MobilTanimi</td>
+                        </tr>
+                        <tr style="font-size:15px;">
+                            <td>Kalkış</td>
+                            <td>Varış</td>
+                            <td>Süre</td>
+                            <td>Mesafe</td>
+                            <td>Toplam KM</td>
+                            <td>Kalkış Noktası</td>
+                            <td>Varış Noktası</td>
+                            <td>Sürücü</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        @{
+                            foreach (var item2 in item.Value.Where(x => x.Mesafe.Trim() != "0").ToList())
+                            {
+                                <tr style="font-size:13px;">
+                                    <td style="padding: 5px;">@Html.Raw(Convert.ToDateTime(item2.KalkisZamani).ToString("dd.MM.yyyy HH:mm").Replace(" ", "<br>"))</td>
+                                    <td style="padding: 5px;">@Html.Raw(Convert.ToDateTime(item2.VarisZamani).ToString("dd.MM.yyyy HH:mm").Replace(" ", "<br>"))</td>
+                                    <td style="padding: 5px;">@item2.Sure</td>
+                                    <td style="padding: 5px;">@item2.Mesafe km</td>
+                                    <td style="padding: 5px;">@item2.ToplamKm km</td>
+                                    <td style="padding: 5px;">@item2.KalkisPozisyon</td>
+                                    <td style="padding: 5px;">@item2.VarisPozisyon</td>
+                                    <td style="padding: 5px;">@item2.Surucu</td>
+                                </tr>
+
+                            }
+                        }
+                        <tr>
+                            <td style="padding: 5px;"></td>
+                            <td style="padding: 5px;"></td>
+                            <td style="padding: 5px;"></td>
+                            <td style="padding: 5px;"></td>
+                            <td style="padding: 5px;"></td>
+                            <td style="padding: 5px;"></td>
+                            <td style="padding: 5px;"></td>
+                        </tr>
+                        <tr style="background-color:#b9b3b385">
+                            <td style="text-align: center; padding: 5px;" colspan="2"><b>Toplam:</b></td>
+                            <td style="padding: 5px;"><b>@item.Key.GecenSure</b></td>
+                            <td style="padding: 5px;"><b>@item.Value.Sum(x => Convert.ToInt32(x.Mesafe)) km</b></td>
+                            <td style="padding: 5px;"> </td>
+                            <td style="padding: 5px;"><b>Ort. Hız: @item.Key.AverageKm km/s <br />Max. Hız: @item.Key.MaxKm km/s </b></td>
+                            <td style="padding: 5px;"></td>
+                            <td style="padding: 5px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+
+</div>
+
+<script>
+    $('#pdfBtn').click(function () {
+
+        $('#pdfBtn').hide();
+
+        setTimeout(() => {
+            $('#pdfBtn').show();
+        }, 1000);
+    });
+</script>

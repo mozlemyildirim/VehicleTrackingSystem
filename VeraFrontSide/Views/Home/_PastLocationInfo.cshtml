@@ -1,0 +1,33 @@
+﻿@model List<VeraDAL.DB.PastLocationObject>
+<table class="table mt-2 table-bordered">
+    <thead>
+        <tr>
+            <th>Araç Adı </th>
+            <th>Zaman</th>
+            <th>Hız</th>
+            <th>Araç Km</th>
+            <th>Toplam Mesafe (KM)</th>
+            <th>Konum</th>
+            <th>Enlem</th>
+            <th>Boylam</th>
+            <th>Olay Detayı</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.AracAdi <input style="display:none;" id="lastDeviceDataIdTLPL" value="0" /></td>
+                <td>@item.Zaman</td>
+                <td>@item.Hiz</td>
+                <td>@item.AracKm</td>
+                <td>@item.TotalKm</td>
+                <td>Konum</td>
+                <td>@item.Enlem</td>
+                <td>@item.Boylam</td>
+                <td>Olay Detayı</td>
+            </tr>
+        }
+
+    </tbody>
+</table> 

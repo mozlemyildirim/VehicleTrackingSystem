@@ -1,0 +1,34 @@
+﻿@model List<VeraDAL.Models.UserRepo>
+
+<table id="kullanıcılistesi" class="table mt-2 table-bordered table-striped font-10">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Kullanıcı Adı</th>
+            <th>Adı</th>
+            <th>Soyadı</th>
+            <th>Kullanıcı Tipi</th>
+            <th>Coğrafi Yetki</th>
+            <th>E-mail</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+
+        {
+            <tr>
+                <td> <button type="button" data-toggle="modal"  onclick="GetUserIdForDisplaying(@item.Id)"  class="btn-xs btn btn-dark"> GÜNCELLE </button>
+                </td>
+                <td><button type="button" class="btn btn-dark btn-xs" onclick="DeleteUser(@item.Id)"> SİL </button></td>
+                <td>@item.UserCode</td>
+                <td>@item.Name</td>
+                <td>@item.Surname</td>
+                <td>@item.Authorization</td>
+                <td>@item.GeographicalAuthority</td>
+                <td>@item.Mail</td>
+            </tr>
+        }
+    </tbody>
+</table> 

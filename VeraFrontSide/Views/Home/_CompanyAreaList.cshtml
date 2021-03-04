@@ -1,0 +1,35 @@
+﻿@{ 
+
+    Layout = null;
+}
+@model  List<VeraDAL.Entities.Area>
+    <table class="table mt-2 table-bordered table-striped font-10">
+        <thead>
+            <tr>
+                <th style="width:50px;"> </th>
+                <th style="width:30px;"> </th>
+                <th style="width:30px;"> </th>
+                <th style="width:30px;"> </th>
+                <th>Bölge Adı </th>
+                <th>Bölge Türü</th>
+                <th>Renk</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><center><a href="javascript:;" title="İlişkili Araçlar" onclick="RelatedVehicles(@item.Id, '@item.Name')" id="areaDevicesBTN"><i class="fa fa-car"></i></a></center></td>
+                    <td><center><a href="javascript:;" title="Haritada Göster" onclick="ShowAreaOnMap(@item.Id,'@item.Name')"><i class="fa fa-map"></i></a></center></td>
+                    <td><center><button onclick="GetCompanyAreaById(@item.Id)" class="btn btn-dark btn-sm">Güncelle</button></center></td>
+                    <td><center><button onclick="DeleteCompanyArea(@item.Id)" class="btn btn-dark btn-sm" >Sil</button></center></td>
+                    <td>@item.Name</td>
+                    <td>@(item.IsRestricted==true?"Normal":"Yasaklı")</td>
+                    <td> -- </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+<script>
+        
+</script>

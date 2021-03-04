@@ -1,0 +1,226 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>VeraMobil - Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="~/LoginAssets/images/icons/favicon.ico">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/css/util.css">
+    <link rel="stylesheet" type="text/css" href="~/LoginAssets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js" integrity="sha256-ZvMf9li0M5GGriGUEKn1g6lLwnj5u+ENqCbLM5ItjQ0=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css" integrity="sha256-zuyRv+YsWwh1XR5tsrZ7VCfGqUmmPmqBjIvJgQWoSDo=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js" integrity="sha256-JirYRqbf+qzfqVtEE4GETyHlAbiCpC005yBTa4rj6xg=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css.map" />
+    <!--===============================================================================================-->
+</head>
+<body>
+
+
+
+    <!-- Şifremi Unuttum Modal -->
+    <div id="ForgetPass" class="modal fade hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         style="display: none; padding-right: 19px;" aria-modal="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Şifremi Unuttum</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="control-label">Kullanıcı Adı:</label>
+                                            <input type="text" class="form-control " value="" id="usernameFP">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message-text" class="control-label">Soru</label>
+                                            <select id="questionFP" class="form-control input-sm">
+                                                @foreach (var item in Model.Question)
+                                                {
+                                                    <option value="@(item.Id)"> @item.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message-text" class="control-label">Cevap:</label>
+                                            <input class="form-control" value="" id="answerFP">
+                                        </div>
+                                        <label class="mt-2 mb-2" id="geciciSifre"></label>
+                                        <button onclick="SendUserPass()" type="button" class="btn btn-info waves-effect waves-light">Gönder</button>
+                                        <button onclick="location.reload()" type="button" class="btn btn-info waves-effect waves-light">Vazgeç</button>
+
+                                    </form>
+                                </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Kapat</button>
+                    
+                </div>
+            </div>
+        </div>
+
+    <div class="limiter">
+        <div class="container-login100" style="background-image: url('/LoginAssets/images/bg-01.jpg');">
+            <div class="wrap-login100 p-t-30 p-b-50">
+                <span class="login100-form-title p-b-41" style="font-size: 40px !important;">
+                    VERAMOBIL GIRIS
+                </span>
+                <div class="login100-form validate-form p-b-33 p-t-5" style="background-color: #cccccce3 !important">
+
+                    <div class="wrap-input100 validate-input" data-validate="Enter username">
+                        <input id="userCode" class="input100" type="text" name="username" placeholder="Kullanıcı Adı">
+                        <span class="focus-input100" data-placeholder="&#xe82a;"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Enter password">
+                        <input id="userPassword" class="input100" type="password" name="pass" placeholder="Şifre">
+                        <span class="focus-input100" data-placeholder="&#xe80f;"></span>
+                    </div>
+
+                    <div class="container-login100-form-btn m-t-32">
+                        <button onclick="Login()" class="login100-form-btn" style="background:black !important;">
+                            GİRİŞ
+                        </button>
+                    </div>
+                    <div class="col-md-12" style="margin-left:125px;">
+                        <a href="#" class="stretched-link mt-5 ml-1" data-toggle="modal" data-target="#ForgetPass">Şifremi Unuttum</a>
+                    </div>
+                    <div class="col-md-12"style="margin-left:110px;">
+                        <a href="http://www.veramobil.com.tr/" target="_blank" class="stretched-link mt-5 ">Web Sitesini Ziyaret Et</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="dropDownSelect1"></div>
+
+    <!--===============================================================================================-->
+    <script src="~/LoginAssets/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/LoginAssets/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/LoginAssets/vendor/bootstrap/js/popper.js"></script>
+    <script src="~/LoginAssets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/LoginAssets/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/LoginAssets/vendor/daterangepicker/moment.min.js"></script>
+    <script src="~/LoginAssets/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/LoginAssets/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/LoginAssets/js/main.js"></script>
+
+</body>
+</html>
+
+
+<script>
+    @*Ajax İşlemler*@
+
+	function Login() {
+		
+		var userCode = $('#userCode').val();
+		var userPassword = $('#userPassword').val();
+
+		if (userCode == "" || userPassword == "") {
+			swal('Hata!', 'Lütfen giriş alanlarını boş bırakmayınız!!', 'error');
+			return;
+		}
+		else {
+		$.ajax({
+			url: '@Url.Action("ControlLogin", "Login")',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				"_userCode": userCode,
+				"_userPassword" :userPassword
+			},
+		    success:function (data) {
+				if (data == true) {
+					window.location = '@Url.Action("Index", "Home")';
+				}
+				else {
+					swal("Hata!", "Kullanıcı Adı yada şifre yanlış , tekrar deneyiniz.", "warning");
+                    
+				}
+            }
+		});
+	    }
+    }
+    function SendUserPass() {
+        var usernameFP = $('#usernameFP').val();
+		var questionFP = $('#questionFP').val();
+		var answerFP = $('#answerFP').val();
+
+        if (questionFP == "" || answerFP == "" || usernameFP=="") {
+			swal('Hata!', 'Lütfen giriş alanlarını boş bırakmayınız!!', 'error');
+			return;
+		}
+        else {
+		$.ajax({
+            url: '@Url.Action("SendUserPass", "Login")',
+            type:'POST',
+            dataType: 'json',
+            data: {
+                "_usernameFP": usernameFP,
+                "_questionFP": questionFP,
+                "_answerFP": answerFP
+			},
+		    success:function (data) {
+                if (data != "") {
+                    //document.getElementById("geciciSifre").textContent ="Yeni Şifreniz: "+ data;
+                    swal("Başarılı!", "Yeni Şifreniz:"+data, "success");
+				}
+				else {
+					swal("Hata!", "Lütfen bilgileri doğru giriniz.", "warning");
+                    
+				}
+            }
+		});
+	    }
+    }
+    	$('body').on('keydown', function (e) {
+        if (e.which == 13) {
+            Login();
+        }
+    });
+</script>

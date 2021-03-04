@@ -1,0 +1,130 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Vera Mobil</title>
+    <link rel="icon" href="img/favicon.png" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/bootstrap.min.css" />
+    <!-- animate CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/animate.css" />
+    <!-- owl carousel CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/owl.carousel.min.css" />
+    <!-- themify CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/themify-icons.css" />
+    <!-- flaticon CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/flaticon.css" />
+    <!-- font awesome CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/magnific-popup.css" />
+    <!-- swiper CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/slick.css" />
+    <!-- style CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+</head>
+
+<body>
+    <style>
+        #labelStyle {
+            color: white;
+            font-size: 20px;
+            float: left;
+        }
+
+        .form-control {
+            background-color: rgba(172, 179, 201, 0.21) !important;
+            border: unset;
+            color: white !important;
+            border-radius: 10px !important;
+        }
+
+        .btn {
+            background-color: black !important;
+            border: 1px solid #5b5b5b !important;
+            border-radius: 10px !important;
+        }
+    </style>
+    <!-- banner part start-->
+    <section class="banner_part" style="height: 100vh">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <div class="banner_text">
+                        <div class="banner_text_iner">
+
+                            <img class="mb-5" style="width: 90%;" src="~/Content/assets/img/logo-white.png">
+                            <div class="form-group">
+                                <label id="labelStyle">Kullanıcı Adı</label>
+                                <input type="text" id="userName" class="form-control" placeholder="" aria-describedby="helpId">
+                            </div>
+
+                            <div class="form-group">
+                                <label id="labelStyle">Şifre</label>
+                                <input type="password" id="password" class="form-control" placeholder="" aria-describedby="helpId">
+                            </div>
+                            <a onclick="loginControl();" class="btn btn-primary mt-3" style="width:100%; color:white;">Giriş Yap</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- banner part start-->
+    <!-- jquery plugins here-->
+    <script src="~/Content/assets/js/jquery-1.12.1.min.js"></script>
+    <!-- popper js -->
+    <script src="~/Content/assets/js/popper.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="~/Content/assets/js/bootstrap.min.js"></script>
+    <!-- easing js -->
+    <script src="~/Content/assets/js/jquery.magnific-popup.js"></script>
+    <!-- isotope js -->
+    <script src="~/Content/assets/js/isotope.pkgd.min.js"></script>
+    <!-- particles js -->
+    <script src="~/Content/assets/js/owl.carousel.min.js"></script>
+    <script src="~/Content/assets/js/jquery.nice-select.min.js"></script>
+    <!-- custom js -->
+    <script src="~/Content/assets/js/custom.js"></script>
+    <script>
+         function loginControl() {
+
+            var userName = $("#userName").val();
+            var password = $("#password").val();
+            if (userName == "" || password == "") {
+                swal('Hata!', 'Lütfen giriş alanlarını boş bırakmayınız!!', 'error');
+                return;
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Action("ControlLogin", "Login")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        "_userName": userName,
+                        "_password": password
+                    },
+                    success: function (data) {
+                        if (data == true) {
+                            window.location = '@Url.Action("Index", "Home")';
+                        }
+                        else
+                            swal("Hata!", "Kullanıcı Adı yada şifre yanlış , tekrar deneyiniz.", "warning");
+                    }
+                });
+            }
+        }
+        $('body').on('keydown', function (e) {
+            if (e.which == 13) {
+                loginControl();
+            }
+        });
+    </script>
+</body>
+</html>

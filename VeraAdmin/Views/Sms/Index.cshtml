@@ -1,0 +1,364 @@
+﻿
+@{
+    ViewData["Title"] = "Sms Bilgileri";
+}
+@model SmsViewModel
+<style>
+        ::-webkit-input-placeholder {
+          color: black;
+          font-size: 17px;
+        }
+        ::-moz-placeholder {
+         color: black;
+          font-size: 17px;
+        }
+        :-ms-input-placeholder {
+          color: black;
+          font-size: 20px;
+        }
+        ::placeholder {
+          color: black;
+          font-size: 17px;
+        }
+        input[type="radio"] {
+            -ms-transform: scale(1.5); /* IE 9 */
+            -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+            transform: scale(1.5);
+        }
+</style>
+
+<div class="container" style="border:outset ;margin-top: 25px;  background-color: #d2dade;padding:55px; width:auto;">
+    <h3 class="col-md-12" style="  font-weight:bolder; text-align:center;">SMS Gönderme</h3>
+
+    <div class="col-md-12 col-sm-12 col-12">
+        <h4 class="col-md-12" style= "font-weight:bolder;"> Telefon Seçim Tipi </h4>
+        <div class="col-md-8 col-8 col-sm-8">
+            <div id="rbDiv" class="form-group" style="font-weight:bolder;font-size:16px;margin-left:30px;">
+                <input type="radio"style="margin-left:5px;" name="select" for="userCB" id="userCB" value="userCB" /><label for="userCB" style="margin-left:5px;font-weight:bolder;font-size:14px;"> Kullanıcı </label>
+                <input type="radio"style="margin-left:5px;" name="select"for="deviceDB" id="deviceDB"value="deviceDB" /><label for="deviceDB" style="margin-left:5px;font-weight:bolder;font-size:14px;"> Cihaz </label>
+                <input type="radio"style="margin-left:5px;" name="select" for="userDefinedCB" id="userDefinedCB"value="userDefinedCB" /><label for="userDefinedCB" style="margin-left:5px;font-weight:bolder;font-size:14px;"> Elle Girme </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="padding:25px">
+        <div class="col-md-12">
+            <div class="col-md-12 col-2 col-sm-12 col-xs-12">
+                <div class="row">
+                    <div id="userDiv" class="col-4 col-md-4" style="border-style:solid; border-width:2px; border-color:white;" disabled>
+                        <label style=" width:100%; font-weight:bolder;font-size:14px;color:white" id="usersLBL">Kullanıcılar:</label>
+                        <input type="text" id="userNameToSearch" style="height:30px" />
+                        <button type="button" style=" color:black;  height:30px ;background-color: #919fa5;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif" onclick="SearchUser()">Kullanıcı Ara</button>
+                        <button type="button" style="color:black; height:30px ;background-color: #919fa5;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif" onclick="GetAllUsers()">Tüm Kullanıcılar</button>
+                        <input type="checkbox" id="selectAllUsers" /> <label for="selectAllUsers" style="font-size:9px;">Tümünü Seç</label>
+                        <select id="userPhone" style="margin-top:1px;margin-bottom:2px;height:171px;width:100%;color:#37095b " multiple disabled>
+                            @if (Model.UserList != null)
+                            {
+                                @foreach (var item in Model.UserList)
+                                {
+                                    <option value="@item.Telephone">@item.UserCode / @item.Telephone</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div id="deviceDiv" class="col-4 col-md-4" style="border-style:solid; border-width:2px; border-color:white;" disabled>
+                        <label style=" width:100%; font-weight:bolder;font-size:14px;color:white" id="devicesLBL">Cihazlar:</label>
+                        <input type="text" id="deviceCarPlateToSearch" style="height:30px" />
+                        <button type="button" style=" color:black;  height:30px ;background-color: #919fa5;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif" onclick="SearchDevice()">Cihaz Ara</button>
+                        <button type="button" style="color:black; height:30px ;background-color: #919fa5;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif" onclick="GetAllDevices()">Tüm Cihazlar</button>
+                        <input type="checkbox" id="selectAllDevices" /> <label for="selectAllDevices" style="font-size:9px;">Tümünü Seç</label>
+                        <select id="deviceGsmNumber" style="height:170px;margin-bottom:2px;  width:100%; margin-top:2px;color:#37095b" multiple disabled>
+                            @if (Model.DeviceList != null)
+                            {
+                                @foreach (var item in Model.DeviceList)
+                                {
+                                    <option value="@item.DeviceGsmNumber">@item.CarPlateNumber / @item.DeviceGsmNumber</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div id="userDefinedDiv" class="col-4 col-md-4" style="border-style:solid; border-width:2px; border-color:white;" disabled>
+                        <label style=" width:100%; font-weight:bolder;font-size:14px;color:white" id="phoneNumberLBL">Telefon Numarası:</label>
+                        <textarea  placeholder="Telefon Numarası Giriniz... Birden Fazla Numara Girilecekse (,) ile ayırınız : Orn(5358796787,5366787272)" disabled style=" margin-bottom:2px;min-height:193px; margin-top:10px;  width:100%;color:#37095b" id="phoneNumber"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="col-md-12 col-12 col-sm-12">
+            <label style=" font-weight:bolder; font-size:16px;">Mesaj : <label id="charEntered"></label></label><textarea onkeyup="countChar(this)" id="message" style="min-height:200px; width:100%" class="form-control "></textarea>
+             
+        </div>
+        <div class="col-md-12">
+            <button onclick="SendSms()" style="float:right;color:black; height:50px;background-color: #919fa5; margin-top:20px;font-size:16px; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">Gönder</button>
+        </div>
+    </div>
+</div>
+<script>
+    function countChar(val) {
+        var len = val.value.length;
+        if (len >= 160) {
+            val.value = val.value.substring(0, 160);
+            swal("Hata!","160 karakter sınırını aştınız..","error");
+        } else {
+          $('#charEntered').text(160 - len);
+        }
+      };
+    var counter = 160;
+    $('#message').keyup(function () {
+
+    });
+    $(document).ready(function () {
+        swal("Bilgi", "Telefon Seçim Tipi Giriniz..", "info");
+    });
+    $('#userCB').click(function () {
+        /*$('#userDiv').css("display", "block");
+        $('#deviceDiv').css("display", "none");
+        $('#userDefinedDiv').css("display", "none");*/
+        $('#userPhone').prop("disabled", false);
+        $('#deviceGsmNumber').prop("disabled",true);
+        $('#phoneNumber').prop("disabled", true);
+        $('#usersLBL').css("color", "#5b2d6b");
+        $('#devicesLBL').css("color", "white");
+        $('#phoneNumberLBL').css("color", "white");  
+        $("option:selected").removeAttr("selected"); 
+        $('#userDiv').css("border-color", "#5b2d6b");
+        $('#deviceDiv').css("border-color", "white");
+        $('#userDefinedDiv').css("border-color", "white");
+        $('#phoneNumber').val(""); 
+    });
+    $('#deviceDB').click(function () {
+        /*$('#userDiv').css("display", "none");
+        $('#deviceDiv').css("display", "block");
+        $('#userDefinedDiv').css("display", "none");*/
+        $('#userPhone').prop("disabled", true);
+        $('#deviceGsmNumber').prop("disabled",false);
+        $('#phoneNumber').prop("disabled", true);
+        $('#usersLBL').css("color", "white");
+        $('#devicesLBL').css("color", "#5b2d6b");
+        $('#phoneNumberLBL').css("color", "white");  
+        $("option:selected").removeAttr("selected"); 
+        $('#userDiv').css("border-color", "white");
+        $('#deviceDiv').css("border-color", "#5b2d6b");
+        $('#userDefinedDiv').css("border-color", "white");
+        $('#phoneNumber').val("");
+     });
+    $('#userDefinedCB').click(function () {
+        /*$('#userDiv').css("display", "none");
+        $('#deviceDiv').css("display", "none");
+        $('#userDefinedDiv').css("display", "block");*/
+        $('#userPhone').prop("disabled", true);
+        $('#deviceGsmNumber').prop("disabled",true);
+        $('#phoneNumber').prop("disabled", false);
+        $('#usersLBL').css("color", "white");
+        $('#devicesLBL').css("color", "white");
+        $('#phoneNumberLBL').css("color", "#5b2d6b");  
+        $("option:selected").removeAttr("selected"); 
+        $('#userDiv').css("border-color", "white");
+        $('#deviceDiv').css("border-color", "white");
+        $('#userDefinedDiv').css("border-color", "#5b2d6b"); 
+        $('#phoneNumber').val("");
+    });
+    $('#phoneNumber').keyup(function () {
+        $('#userPhone').prop("disabled", true);
+        if ($('#phoneNumber').val() == "")
+            $('#userPhone').prop("disabled", false);
+
+         $('#deviceGsmNumber').prop("disabled", true);
+        if ($('#phoneNumber').val() == "")
+            $('#deviceGsmNumber').prop("disabled", false);
+    });
+    function SendSms() { 
+        debugger;
+        var phoneList = [];
+        var userPhone = $('#userPhone').val();
+        var phoneNumberEntered = $('#phoneNumber').val();
+        var deviceGsmNumber = $('#deviceGsmNumber').val();
+        var message = $('#message').val();
+        var selectedRadioButton = $('#rbDiv input[name="select"]:checked').val();
+
+        if (selectedRadioButton == "userCB") {
+            if (userPhone == null || userPhone == "") {
+                 swal("Hata !", "Lütfen Telefon Numarası Seçiniz..", "error");
+                 return;
+            }
+        }
+         if (selectedRadioButton == "deviceDB") {
+            if (deviceGsmNumber == null || deviceGsmNumber == "") {
+                 swal("Hata !", "Lütfen Telefon Numarası Seçiniz..", "error");
+                 return;
+            }
+        }
+        if (selectedRadioButton == "userDefinedCB") {
+            if (phoneNumberEntered == null || phoneNumberEntered == "") {
+                 swal("Hata !", "Lütfen Telefon Giriniz..", "error");
+                 return;
+            }
+        }
+
+
+        if (message == "") {
+            swal("Hata !", "Lütfen Bir Mesaj Giriniz..", "error");
+            return;
+        }
+        if (message.length >= 160) {
+            swal("Hata !", "Lütfen 160 Karakterlik Mesaj Limitini Aşmayınız..", "error");
+            return;
+        }
+
+        //Kullanıcı Telefonu Seçiliyse
+        if (selectedRadioButton == "userCB") {
+            for (var i = 0; i < userPhone.length; i++) {
+                phoneList.push(userPhone[i]);
+            }
+        }
+        //Cihaz Telefonu Seçiliyse
+        if (selectedRadioButton == "deviceDB") {
+            for (var i = 0; i < deviceGsmNumber.length; i++) {
+                phoneList.push(deviceGsmNumber[i]);
+            }
+        }
+        //Elle numara giriliyorsa
+        if (selectedRadioButton == "userDefinedCB") {
+            if (phoneNumberEntered.includes(","))
+                phoneList = phoneNumberEntered.split(",");
+            else {
+                phoneList.push(phoneNumberEntered);
+            }
+        }
+        if (phoneList == null || phoneList.length == 0) {
+             swal("Hata !", "Lütfen Telefon Giriniz veya Seçiniz..", "error");
+                 return;
+        }
+        $.ajax({
+            url: '@Url.Action("SendSms","Sms")',
+            data: {
+                '_selectedPhoneNumbers': phoneList,
+                '_message':message
+            },
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                if (data) {
+                    swal("Başarılı!", "Mesaj Gönderildi", "success");
+                    return;
+                }
+                swal("Hata !", "Mesaj Gönderilemedi", "error");
+            }
+        });
+    }
+    function GetAllUsers() {
+        $('#userNameToSearch').val("");
+         $.ajax({
+            url: '@Url.Action("GetAllUsers","Sms")',
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                if (data) {
+                    $('#userPhone').html("");
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                         $('#userPhone').append("<option value="+item.Telephone+">"+item.UserCode+" / "+item.Telephone+"</option>");
+                    }
+                }
+                else {
+                    swal("Hata!", "Böyle bir kullanıcı bulunamadı ..", "error");
+                    return;
+                }
+            }
+        });
+    }
+    function SearchUser() {
+        var userNameToSearch = $('#userNameToSearch').val();
+        if (userNameToSearch == null || userNameToSearch == "") {
+            swal("Hata", "Kullanıcı adı giriniz", "error");
+            return;
+        }
+         $.ajax({
+            url: '@Url.Action("GetUserByUserName","Sms")',
+            data: {
+                '_userNameToSearch': userNameToSearch,
+            },
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                if (data) {
+                    $('#userPhone').html("");
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                         $('#userPhone').append("<option value="+item.Telephone+">"+item.UserCode+" / "+item.Telephone+"</option>");
+                    }
+                }
+                else {
+                    swal("Hata!", "Böyle bir kullanıcı bulunamadı ..", "error");
+                    return;
+                }
+            }
+        });
+    }
+    function SearchDevice() { 
+        var deviceCarPlateToSearch = $('#deviceCarPlateToSearch').val();
+         if (userNameToSearch == null || userNameToSearch == "") {
+            swal("Hata", "Plaka giriniz", "error");
+            return;
+        }
+        $.ajax({
+            url: '@Url.Action("GetDeviceByCarPlateNumber","Sms")',
+            data: {
+                '_deviceCarPlateToSearch': deviceCarPlateToSearch,
+            },
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                if (data) {
+                    $('#deviceGsmNumber').html("");
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                         $('#deviceGsmNumber').append("<option value="+item.DeviceGsmNumber+">"+item.CarPlateNumber+" / "+item.DeviceGsmNumber+"</option>");
+                    }
+                }
+                else {
+                    swal("Hata!", "Böyle bir cihaz bulunamadı ..", "error");
+                    return;
+                }
+            }
+        });
+    }
+    function GetAllDevices() {
+        $('#deviceCarPlateToSearch').val("");
+         $.ajax({
+            url: '@Url.Action("GetAllDevices","Sms")',
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                if (data) {
+                    $('#deviceGsmNumber').html("");
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        $('#deviceGsmNumber').append("<option value="+item.DeviceGsmNumber+">"+item.CarPlateNumber+" / "+item.DeviceGsmNumber+"</option>");
+                    }
+                }
+                else {
+                    swal("Hata!", "Böyle bir cihaz bulunamadı ..", "error");
+                    return;
+                }
+            }
+        });
+    }
+    $('#selectAllUsers').click(function () {
+        if ($('#selectAllUsers').is(":checked")) {
+            $('#userPhone option').prop('selected', true);
+        }
+        if ($('#selectAllUsers').is(":checked")==false) {
+            $('#userPhone option').prop('selected', false);
+        }
+    });
+    $('#selectAllDevices').click(function () {
+        if ($('#selectAllDevices').is(":checked")) {
+            $('#deviceGsmNumber option').prop('selected', true);
+        }
+        if ($('#selectAllDevices').is(":checked")==false) {
+            $('#deviceGsmNumber option').prop('selected', false);
+        }
+    }); 
+</script>

@@ -1,0 +1,92 @@
+﻿@model Dictionary<VeraDAL.DB.DRKeyClass, List<VeraDAL.DB.DurakRaporuObject>>
+@{
+    Layout = null;
+}
+@*<script src="~/Content/assets/plugins/jquery/jquery.min.js"></script>*@
+<script src="~/Content/assets/plugins/jquery/printThis.js"></script>
+
+
+<!--replacepoint-->
+<div id="exportDRDiv">
+    <style>
+        body {
+            font-family: Verdana !important;
+            color: black;
+        }
+
+        h5 {
+            color: black;
+        }
+    </style>
+
+    <div style="width: 100%; font-family: Verdana;" class="col-md-12">
+        <!--replacepoint1-->
+        <button id="pdfBtn" type="button" onclick="$('#exportDRDiv').printThis();"
+                style="float:right; width:200px; border:none;
+    color:black; padding:20px; text-align:center;
+    text-decoration:none; display:inline-block;
+    font-size:16px;margin:4px 2px;cursor:pointer;
+    border-radius:8px; font-weight:bold">
+            PDF İNDİR
+        </button>
+        <!--replacepoint2-->
+        <h2 style="text-align:center;">Durak Raporu</h2>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5>Tarih :@ViewBag.Tarih</h5>
+                <h5>Süre :  @ViewBag.Sure </h5>
+                <p>Kayıt Sayısı: @Model.Count</p>
+            </div>
+        </div>
+
+        @foreach (var item1 in Model)
+        {
+            <div style="background-color:#a9a9a961; border-top-left-radius:7px; border-bottom-right-radius:7px; margin-top:15px;">
+                <table class="table-bordered table" border="1" style="font-size: 12px; border-collapse: collapse; font-family: Verdana; width: 100%; border:1px solid black; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td style="font-size:20px;" colspan="1">Grup</td>
+                            <td style="font-size:20px;" colspan="1">Mobil Tanımı</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:18px;" colspan="1">@item1.Key.Grup</td>
+                            <td style="font-size:18px;" colspan="1">@item1.Key.MobilTanimi</td>
+                        </tr>
+                        <tr style="font-size:16px;">
+                            <td>Durak</td>
+                            <td>Sefer Sayısı</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        @{
+                            foreach (var item in item1.Value)
+                            {
+                                <tr style="font-size:14px;">
+                                    <td style="padding: 5px;">@item.Durak</td>
+                                    <td style="padding: 5px;">@item.SeferSayisi</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    $('#pdfBtn').click(function () {
+
+        $('#pdfBtn').hide();
+
+        setTimeout(() => {
+            $('#pdfBtn').show();
+        }, 1000);
+    });
+</script>

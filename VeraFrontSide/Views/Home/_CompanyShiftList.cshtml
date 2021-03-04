@@ -1,0 +1,43 @@
+﻿@model List<VeraDAL.Entities.Shift>
+<table class="table mt-2 table-bordered table-striped font-10">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Çizelge Adı</th>
+            <th>Başlangıç Tarihi</th>
+            <th>Bitiş Tarihi</th>
+            <th>Başlangıç Saati</th>
+            <th>Bitiş Saati</th>
+            <th>Pazartesi</th>
+            <th>Salı</th>
+            <th>Çarşamba</th>
+            <th>Perşembe</th>
+            <th>Cuma</th>
+            <th>Cumartesi</th>
+            <th>Pazar</th>
+            <th>Tanım Zamanı</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><button type="button" onclick="DeleteCompanyShift(@item.Id)" style="color:white;" class="btn btn-dark btn-xs"> SİL </button></td>
+                <td>@item.Name </td>
+                <td>@item.StartDate </td>
+                <td>@item.EndDate </td>
+                <td>@item.StartHour </td>
+                <td>@item.EndHour</td>
+                <td>@(item.Pazartesi == true ? "ACIK" : "KAPALI") </td>
+                <td>@(item.Sali == true ? "ACIK" : "KAPALI") </td>
+                <td>@(item.Carsamba == true ? "ACIK" : "KAPALI") </td>
+                <td>@(item.Persembe == true ? "ACIK" : "KAPALI") </td>
+                <td>@(item.Cuma == true ? "ACIK" : "KAPALI") </td>
+                <td>@(item.Cumartesi == true ? "ACIK" : "KAPALI") </td>
+                <td>@(item.Pazar == true ? "ACIK" : "KAPALI") </td>
+                <td>@item.CreationDate</td>
+            </tr>
+        }
+
+    </tbody>
+</table>

@@ -1,0 +1,848 @@
+﻿@{
+    Layout = null;
+}
+<style>
+    #map {
+        height: 100%;
+        width: 100%;
+    }
+
+    #map2 {
+        height: 100%;
+        width: 100%;
+    }
+
+    body {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    #deneme {
+        height: 80%;
+        width: 100%;
+        z-index: 5;
+    }
+
+    .bottomButtons {
+        position: absolute;
+        background-color: white;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        border-top: 1px solid #ccc;
+    }
+
+        .bottomButtons img {
+            width: 20%;
+            float: left;
+            padding: 2%;
+        }
+
+    .my-custom-class-for-label {
+        border: 1px solid black;
+        border-radius: 5px;
+        background: white;
+        text-align: center;
+        font-size: 10px;
+        color: black;
+        padding: 3px;
+        width: 65px;
+        overflow: hidden;
+        height: 18px;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: #0084ad !important;
+        border-color: #0084ad !important;
+    }
+
+    .restArea {
+        -webkit-overflow-scrolling: touch;
+    }
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>Vera Mobil</title>
+    <link rel="icon" href="~/Content/assets/img/favicon.png" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/bootstrap.min.css" />
+    <!-- animate CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/animate.css" />
+    <!-- owl carousel CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/owl.carousel.min.css" />
+    <!-- themify CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/themify-icons.css" />
+    <!-- flaticon CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/flaticon.css" />
+    <!-- font awesome CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/magnific-popup.css" />
+    <!-- swiper CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/slick.css" />
+    <!-- style CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/style.css" />
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTkNrvOk7zEta8C8dHBTXvwEb7TuuNS38"></script>
+    <!-- banner part start-->
+    <!-- jquery plugins here-->
+    <script src="~/Content/assets/js/jquery-1.12.1.min.js"></script>
+    <!-- popper js -->
+    <script src="~/Content/assets/js/popper.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="~/Content/assets/js/bootstrap.min.js"></script>
+    <!-- easing js -->
+    <script src="~/Content/assets/js/jquery.magnific-popup.js"></script>
+    <!-- isotope js -->
+    <script src="~/Content/assets/js/isotope.pkgd.min.js"></script>
+    <!-- particles js -->
+    <script src="~/Content/assets/js/owl.carousel.min.js"></script>
+    <script src="~/Content/assets/js/jquery.nice-select.min.js"></script>
+    <!-- custom js -->
+    <script src="~/Content/assets/js/custom.js"></script>
+
+    <script src="https://cdn.sobekrepository.org/includes/gmaps-markerwithlabel/1.9.1/gmaps-markerwithlabel-1.9.1.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+    <script src="~/Content/printThis.js"></script>
+</head>
+
+<body>
+
+
+    <div id="map"></div>
+    <div style="display: none;" id="map2"></div>
+
+    @*<a style="background-color: red; font-size: 30px; position: absolute; top: 0; left: 0;" href="#" id="berkeberke" target="_blank">REPOR INDIR</a>*@
+
+
+    <div style="background-color: white; display: none; z-index: 1827361232781; position: absolute; top: 0; left: 0; width: 100%; height: 100%;" id="googleMapsGoIframeDiv">
+        <a onclick="$('#googleMapsGoIframeDiv').fadeOut(250); document.getElementById('googleMapsGoIframe').src = '';" style="display: block; position: absolute; top: 0; right: 0; margin-right: 10px; margin-top: 10px; border: 1px solid black; padding-right: 10px; padding-left: 10px; padding-top: 5px; padding-bottom: 5px; font-weight: bold; background-color: white; border-radius: 5px;">Geri Dön</a>
+        <iframe src="#" id="googleMapsGoIframe" style="background-color: white; width: 100%; height: 100%;" frameborder="0"></iframe>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div id="raporShow" style="background-color: rgb(209,209,209);  width: 100%; height: 100%; display:none; position: absolute; top: 0; left: 0; z-index: 129831273912783">
+        <iframe style="position: absolute; margin-top: 30px; height: calc(100% - 30px); left: 0; width: 100%;" id="pdfviewer" src="" frameborder="0"></iframe>
+        <div class="btn btn-primary" style="z-index:129831273912789; background-color:black; position: absolute; top: 0; left: 0;" onclick="$('#raporShow').hide(); $('#pdfviewer').attr('src', '');"><i class="fa fa-arrow-left"></i></div>
+
+    </div>
+
+    <div class="restArea" id="demo" style="display: none; width: 100%; background-color: white; position: absolute; top: 0; left: 0; overflow-y: auto; overflow: hidden; overflow-y: scroll;">
+        <div class="row">
+            <div class="col-3 mt-3">
+                <h4 onclick="$('#demo').fadeOut();">&nbsp;<i style="font-size:20px;" class="fa fa-angle-left"></i>&nbsp; Geri</h4>
+            </div>
+            <div class="col-6 mt-3 text-center">
+                <h5 style="margin-top: 2px !important;" id="totalDeviceCount">Araçlar</h5>
+            </div>
+        </div>
+
+        <div id="listContainer">
+
+        </div>
+    </div>
+
+    <div id="loadingDiv" style=" display: none; width: 100% ; z-index: 356435155; position: absolute; height: 100%; top: 0px; left: 0px; background-color: white;">
+        <table style="width: 100%; height: 100%;">
+            <tr>
+                <td style="text-align:center;"><img src="~/Content/assets/icons/loading.gif" style="width: 50%;" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="reportResultContainer" style="width: 100%; height: 100%; padding:15px; position: absolute; top: 0; left: 0; z-index: 15423165256256; background-color: white; display:none;">
+        <i onclick="$('#reportResultContainer').fadeOut(250);" style="font-size: 25px; float: right !important; position: absolute; right: 0; top: 0; margin-right: 10px; margin-top: 10px;" class="fa fa-times pull-right"></i>
+        <h3 class="text-center">RAPORLAR</h3>
+        <h5 onclick="openRaporTarihSec(this, 'seferOzetRaporu');  $('#reportResultContainer').css('background-color', '#606060');" class="mt-5"><i class="fa fa-arrow-right"></i>&nbsp;Sefer Özeti Raporu</h5>
+        <hr />
+        <h5 onclick="openRaporTarihSec(this, 'gecmisKonumRaporu');  $('#reportResultContainer').css('background-color', '#606060');"><i class="fa fa-arrow-right"></i>&nbsp;Geçmiş konum raporu</h5>
+        <hr />
+        <h5 onclick="openRaporTarihSec(this, 'giseGecisRaporu');  $('#reportResultContainer').css('background-color', '#606060');"><i class="fa fa-arrow-right"></i>&nbsp;Gişe geçiş raporu</h5>
+        <hr />
+    </div>
+    <div id="raporTarihSecDiv" style="width: 80%; border:1px solid black; z-index: 25142511225121; height: auto; padding:15px; position: absolute; top: 10%; left: 10%; background-color: white; display:none;">
+    </div>
+
+    <script>
+        function openRaporTarihSec(elem, functionName) {
+            var title = $(elem).text().trim();
+            var html = `<i onclick="$('#raporTarihSecDiv').fadeOut(250); $('#reportResultContainer').css('background-color', 'white');" style="font-size: 25px; float: right !important; position: absolute; right: 0; top: 0; margin-right: 10px; margin-top: 10px;" class="fa fa-times pull-right"></i>
+                    <h4>`+ title + `</h4>
+                    <div style="clear: both;"></div>
+                    <hr />
+                    <span onclick="`+ functionName + `('@DateTime.Now.ToString("yyyy-MM-dd")', '@DateTime.Now.ToString("yyyy-MM-dd")')" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">Bugün</b></span>
+                    <hr />
+                    <span onclick="`+ functionName + `('@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")', '@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")')" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">Dün</b></span>
+                    <hr />
+                    <span onclick="`+ functionName + `('@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")', '@DateTime.Now.ToString("yyyy-MM-dd")')" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">2 Gün</b></span>
+                    <hr />
+                    <span onclick="`+ functionName + `('@DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd")', '@DateTime.Now.ToString("yyyy-MM-dd")')" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">3 Gün</b></span>
+                    <hr />
+                    <span onclick="$(this).parent().find('input').fadeToggle(250)" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">Tarih Seçimi</b></span>
+                    <div style="text-align:center;">
+                    <input value="@DateTime.Now.ToString("yyyy-MM-dd")" style="display: none; width: 70%; font-size: 14px; margin-top: 10px; border: 1px solid black; padding: 4px; border-radius: 5px;" type="date" />
+                    <input value="@DateTime.Now.ToString("yyyy-MM-dd")" style="display: none; width: 70%; font-size: 14px; margin-top: 10px; border: 1px solid black; padding: 4px; border-radius: 5px;" type="date" />
+                    <input onclick="`+ functionName + `($(this).parent().find(\`*[type=\'date\']\`).first().val(), $(this).parent().find(\`*[type=\'date\']\`).last().val())" style="padding-top: 5px; padding-bottom: 5px;  background-color: black; color: white; border: none; border-radius: 5px; width: 70%; margin-top: 10px; display: block;  display: none;" type="button" value="Göster" />
+                    </div>
+                    <hr />`;
+
+            $("#raporTarihSecDiv").html(html);
+            $("#raporTarihSecDiv").fadeIn();
+
+        }
+    </script>
+
+    <div id="other" style="width: 100%; height: 100%; padding:15px; position: absolute; top: 0; left: 0; z-index: 15423165256256; background-color: white; display:none;">
+        <i onclick="$('#other').fadeOut(250);" style="font-size: 25px; float: right !important; position: absolute; right: 0; top: 0; margin-right: 10px; margin-top: 10px;" class="fa fa-times pull-right"></i>
+        <img src="~/Content/assets/img/vera-logo.png" style="width:60% ; margin-left: 20%;">
+        <div class="custom-control custom-switch mt-5">
+            <input type="checkbox" style="color:red;" onchange="$('#other').fadeOut(250); changeMapType(); " class="custom-control-input" id="customSwitches">
+            <label class="custom-control-label" for="customSwitches"><h5 style="line-height:unset !important;">Uydu Görünümü</h5></label>
+        </div>
+        <hr />
+        <div class="custom-control custom-switch">
+            <input type="checkbox" style="color:red;" onchange="$('#other').fadeOut(250); toogleTraffic(); " class="custom-control-input" id="customSwitches1">
+            <label class="custom-control-label" for="customSwitches1"><h5 style="line-height:unset !important;">Trafiği Göster</h5></label>
+        </div>
+        <hr />
+        <h5><i class="fa fa-sign-out"></i>&nbsp;<a style="color: black;" href="~/Login/Logout">Çıkış Yap</a></h5>
+
+    </div>
+
+    <div class="bottomButtons" id="bottomButtonsOut">
+        <img onclick="$('#demo').fadeIn();" src="~/Content/assets/icons/list.png" />
+        <img style="width: 50%; margin-top: 5%; margin-left: 5%!important; margin-right: 5%;" src="~/Content/assets/img/vera-logo.png" />
+
+        @*<img src="~/Content/assets/icons/transparent.png" />
+            <img src="~/Content/assets/icons/transparent.png" />
+            <img src="~/Content/assets/icons/transparent.png" />*@
+
+        <img onclick="$('#other').fadeIn();" src="~/Content/assets/icons/other.png" />
+    </div>
+
+    <div class="bottomButtons" id="bottomButtonsIn" style="display: none;">
+        <img onclick="lastFocusedDeviceId = 0; $('#map2').html(''); $('#map2').hide();$('#map').show();$('#bottomButtonsIn').hide();$('#bottomButtonsOut').show();" src="~/Content/assets/icons/1.png" />
+        <img src="~/Content/assets/icons/transparent.png" />
+        <img onclick="$('#gecmisKonumTarihSecimi').fadeIn(250);" src="~/Content/assets/icons/last.png" />
+        <img src="~/Content/assets/icons/transparent.png" />
+        <img onclick="$('#reportResultContainer').fadeIn();" src="~/Content/assets/icons/reports.png" />
+    </div>
+
+    <div id="bottomButtonsPlayButtons" class="bottomButtons" style="display: none;">
+        <img onclick="playInterval += 25; $('#oynatmaHizi').html(playInterval/100);" src="~/Content/assets/icons/5.png" />
+        <img src="~/Content/assets/icons/transparent.png" />
+        <img id="gecmisPlayPauseButton" onclick="if (!isGecmisKonumPlaying) { this.src = '../Content/assets/icons/3.png'; isGecmisKonumPlaying = true; oynatBakalim(); } else { isGecmisKonumPlaying = false; this.src = '../Content/assets/icons/2.png'; }" src="~/Content/assets/icons/2.png" />
+        <img src="~/Content/assets/icons/transparent.png" />
+        <img onclick="if (playInterval > 10) playInterval -= 25; $('#oynatmaHizi').html(playInterval/100);" src="~/Content/assets/icons/4.png" />
+    </div>
+
+    <div id="topPlayInformation" style="display: none; padding: 10px; width: 100%; background-color: #ffffffad; position: absolute; top: 0; border-bottom: 1px solid #ccc;">
+        <i onclick="isGecmisKonumPlaying = false; isGecmisKonumShowing = false; $('#topPlayInformation').hide(); gecmisKonumMarker.setMap(null); focusToOneDevice(lastFocusedDeviceId); $('#bottomButtonsPlayButtons').hide(); $('#bottomButtonsIn').show(); flightPath.setMap(null); $('#gecmisPlayPauseButton').attr('src','../Content/assets/icons/2.png') " style="font-size: 30px;" class="fa fa-times pull-right"></i>
+        <span>
+            <b id="playInfoPlaka" style="color: black; font-size: 20px;"></b>
+            <br />
+            <b id="playInfoAdres" style="color: black; font-size: 13px; font-weight: 600; width: 85%; display: inline-block;"></b>
+            <br />
+            <b id="playInfoAnlikHiz" style="color: black; font-size: 15px;"></b>
+            <br />
+            <div class="row">
+                <div class="col-8">
+                    <b id="playInfoTarih" style="color: black; font-size: 15px;"></b>
+                </div>
+                <div class="col-4 text-right">
+                    <b id="oynatmaHizi" style="color: black; font-size: 15px;">1.5</b>X
+                </div>
+            </div>
+        </span>
+    </div>
+
+    <div id="gecmisKonumTarihSecimi" style="display: none; background-color: rgba(0, 0, 0, 0.3); position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        <table style="width: 100%; height: 100%;">
+            <tr>
+                <td>
+                    <center>
+                        <div style="width: 60%; margin: 0 auto; background-color: white; border-radius: 5px; padding: 7px;">
+                            <i onclick="$('#gecmisKonumTarihSecimi').fadeOut(250);" style="font-size: 25px;" class="fa fa-times pull-right"></i>
+                            <div style="clear: both;"></div>
+
+                            <hr />
+                            <span onclick="showGecmis('@DateTime.Now.ToString("yyyy-MM-dd")', '@DateTime.Now.ToString("yyyy-MM-dd")')" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">Bugün</b></span>
+                            <hr />
+                            <span onclick="showGecmis('@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")', '@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")')" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">Dün</b></span>
+                            <hr />
+                            <span onclick="showGecmis('@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")', '@DateTime.Now.ToString("yyyy-MM-dd")')" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">2 Gün</b></span>
+                            <hr />
+                            <span onclick="showGecmis('@DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd")', '@DateTime.Now.ToString("yyyy-MM-dd")')" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">3 Gün</b></span>
+                            <hr />
+                            <span onclick="$(this).parent().find('input').fadeToggle(250)" style="display: block; margin-top: 0px; margin-bottom: 0px; font-size: 18px; color: black !important;"><b style="color: black;">Tarih Seçimi</b></span>
+
+                            <input value="@DateTime.Now.ToString("yyyy-MM-dd")" style="display: none; width: 70%; font-size: 14px; margin-top: 10px; border: 1px solid black; padding: 4px; border-radius: 5px;" type="date" />
+                            <input value="@DateTime.Now.ToString("yyyy-MM-dd")" style="display: none; width: 70%; font-size: 14px; margin-top: 10px; border: 1px solid black; padding: 4px; border-radius: 5px;" type="date" />
+                            <input onclick="showGecmis($(this).parent().find('*[type=\'date\']').first().val(), $(this).parent().find('*[type=\'date\']').last().val())" style="padding-top: 5px; padding-bottom: 5px;  background-color: black; color: white; border: none; border-radius: 5px; width: 70%; margin-top: 10px; display: block;  display: none;" type="button" value="Göster" />
+                            <hr />
+                        </div>
+                    </center>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
+
+
+<script>
+    $(window).on("load", function () {
+        initMap();
+    });
+
+    $(document).ready(function () {
+        var height = $(".bottomButtons img")[0].offsetHeight.toString().replace("px", "").trim();
+        $(".restArea").css("height", "calc(100% - " + height + "px)");
+        $(".restArea").css("max-height", "calc(100% - " + height + "px)");
+    });
+
+    var map;
+    var map2;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 39.016188, lng: 35.372992 },
+            zoom: 5,
+            disableDefaultUI: true,
+            maxZoom: 16,
+            mapTypeId: typeMapChange
+
+        });
+
+        getDevicesToShow();
+    }
+
+    function changeMapType() {
+        if (typeMapChange == "roadmap") {
+            typeMapChange = "satellite";
+        }
+        else {
+            typeMapChange = "roadmap";
+        }
+
+        map.setMapTypeId(typeMapChange);
+        map2.setMapTypeId(typeMapChange);
+    }
+
+    function seferOzetRaporu(_startDate, _endDate) {
+        $("#raporTarihSecDiv").hide();
+        $("#reportResultContainer").hide();
+        $("#reportResultContainer").css("background-color", "white");
+
+        $("#loadingDiv").show();
+
+         $.ajax({
+            url: '@Url.Action("SeferOzetiRaporu", "Home")',
+            type: 'POST',
+            data: {
+                _deviceId: lastFocusedDeviceId,
+                _startDate: _startDate,
+                _endDate: _endDate
+            },
+            dataType: 'html',
+            success: function (data) {
+                $.ajax({
+                    url: '@Url.Action("HtmlToPdf", "Home")',
+                    type: 'POST',
+                    data: {
+                        _html: data
+                    },
+                    dataType: 'json',
+                    success: function (data2) {
+                        $("#pdfviewer").removeAttr("src").attr("src", "http://docs.google.com/gview?embedded=true&url=" + window.location.origin + "/Content/" + data2 + "&embedded=true");
+                        $("#loadingDiv").hide();
+                        $("#raporShow").fadeIn();
+                    }
+                });
+            }
+        });
+    }
+
+    var trafficLayerMap1 = null;
+    var trafficLayerMap2 = null;
+
+    function toogleTraffic() {
+        if (trafficLayerMap1 == null) {
+            trafficLayerMap1 = new google.maps.TrafficLayer();
+            trafficLayerMap1.setMap(map);
+
+            trafficLayerMap2 = new google.maps.TrafficLayer();
+            trafficLayerMap2.setMap(map2);
+        }
+        else {
+            trafficLayerMap1.setMap(null);
+            trafficLayerMap1 = null;
+
+            trafficLayerMap2.setMap(null);
+            trafficLayerMap2 = null;
+        }
+    }
+
+    function gecmisKonumRaporu(_startDate, _endDate) {
+        $("#raporTarihSecDiv").hide();
+        $("#reportResultContainer").hide();
+        $("#reportResultContainer").css("background-color", "white");
+
+        $("#loadingDiv").show();
+
+        $.ajax({
+            url: '@Url.Action("GecmisKonumRaporu", "Home")',
+            type: 'POST',
+            data: {
+                _deviceId: lastFocusedDeviceId,
+                _startDate: _startDate,
+                _endDate: _endDate
+            },
+            dataType: 'html',
+            success: function (data) {
+                $.ajax({
+                    url: '@Url.Action("HtmlToPdf", "Home")',
+                    type: 'POST',
+                    data: {
+                        _html: data
+                    },
+                    dataType: 'json',
+                    success: function (data2) {
+                        $("#pdfviewer").removeAttr("src").attr("src", "http://docs.google.com/gview?embedded=true&url=" + window.location.origin + "/Content/" + data2 + "&embedded=true");
+                        $("#loadingDiv").hide();
+                        $("#raporShow").fadeIn();
+                    }
+                });
+            }
+        });
+    }
+
+
+    function giseGecisRaporu(_startDate, _endDate) {
+        $("#raporTarihSecDiv").hide();
+        $("#reportResultContainer").hide();
+        $("#reportResultContainer").css("background-color", "white");
+
+        $("#loadingDiv").show();
+
+        $.ajax({
+            url: '@Url.Action("GiseGecisRaporu", "Home")',
+            type: 'POST',
+            data: {
+                _deviceId: lastFocusedDeviceId,
+                _startDate: _startDate,
+                _endDate: _endDate
+            },
+            dataType: 'html',
+            success: function (data) {
+                $.ajax({
+                    url: '@Url.Action("HtmlToPdf", "Home")',
+                    type: 'POST',
+                    data: {
+                        _html: data
+                    },
+                    dataType: 'json',
+                    success: function (data2) {
+                        $("#pdfviewer").removeAttr("src").attr("src", "http://docs.google.com/gview?embedded=true&url=" + window.location.origin + "/Content/" + data2 + "&embedded=true");
+                        $("#loadingDiv").hide();
+                        $("#raporShow").fadeIn();
+                    }
+                });
+            }
+        });
+    }
+    var lastFlipId = "";
+
+    //function showFlip() {
+    //    $("#" + lastFlipId).fadeIn(750);
+    //    var rotate = parseInt($("#" + lastFlipId).attr("style").split("rotateY(")[1].split("deg")[0]);
+
+    //    if (rotate < 360) {
+    //        $("#" + lastFlipId).attr("style", $("#" + lastFlipId).attr("style").replace(rotate + "deg", (rotate + 2) + "deg"));
+    //        setTimeout(showFlip, 1);
+    //    }
+    //}
+
+    //function hideFlip() {
+    //    $("#" + lastFlipId).fadeOut(300);
+    //    var rotate = parseInt($("#" + lastFlipId).attr("style").split("rotateY(")[1].split("deg")[0]);
+
+    //    if (rotate > 180) {
+    //        $("#" + lastFlipId).attr("style", $("#" + lastFlipId).attr("style").replace(rotate + "deg", (rotate - 2) + "deg"));
+    //        setTimeout(hideFlip, 1);
+    //    }
+    //}
+
+    var oldMarkers = [];
+    var oldMarkers2 = [];
+    var lastFocusedDeviceId = -1;
+    var isGecmisKonumShowing = false;
+    var gecmisKonumData = null;
+    var gecmisKonumDataIndex = null;
+    var gecmisKonumMarker = null;
+    var lastFocusedDevicePlateNumber = '';
+    var isGecmisKonumPlaying = false;
+    var playInterval = 150;
+    var flightPath = null;
+    var typeMapChange = "roadmap";
+
+    function focusToOneDevice(id) {
+        if (id != 0 && id != lastFocusedDeviceId) {
+            return
+        }
+
+        if ($("#map2").is(":visible") == false)
+            return;
+
+        if ($("#map2").html() == "") {
+            $("#bottomButtonsOut").hide();
+            $("#bottomButtonsIn").show();
+            map2 = new google.maps.Map(document.getElementById('map2'), {
+                center: { lat: 41.015137, lng: 28.979530 },
+                zoom: 11,
+                disableDefaultUI: true,
+                maxZoom: 16,
+                mapTypeId: typeMapChange
+            });
+
+            if (trafficLayerMap2 != null) {
+                trafficLayerMap2.setMap(map2);
+            }
+
+            $("#demo").fadeOut();
+        }
+
+
+        $.ajax({
+            url: '@Url.Action("GetSingleDeviceDetail", "Home")',
+            type: 'POST',
+            data: {
+                _deviceId: id
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (!$(".mapInfoDiv").is(":visible")) {
+                    for (var i = 0; i < oldMarkers2.length; i++) {
+                        oldMarkers2[i].setMap(null);
+                    }
+
+                    oldMarkers2 = [];
+
+                    if (!isGecmisKonumShowing) {
+                        for (var i = 0; i < data.length; i++) {
+
+                            var clickLat = data[i]["lat"].toString().replace(",", ".");
+                            var clickLon = data[i]["lng"].toString().replace(",", ".");
+
+                            var icon = {
+                                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                                scale: 3,
+                                fillColor: (data[i]["ioStatus"] == "Açık" ? "#0084ad" : "#ff4343"),
+                                fillOpacity: 0.8,
+                                strokeWeight: 1,
+                                rotation: data[i]["directionDegree"],
+                                labelOrigin: new google.maps.Point(0, 0),
+                            };
+
+                            var marker = new MarkerWithLabel({
+                                map: map2,
+                                position: { lat: data[i]["lat"], lng: data[i]["lng"] },
+                                icon: icon,
+
+                            });
+
+                            marker['infowindow'] = new google.maps.InfoWindow({
+                                content: '<div class="mapInfoDiv" style="padding: 5px;"<center><span style="font-size: 17px;">' + data[i]["carPlateNumber"] + '</span><br><b style="color: black; font-weight: bold;">' + data[i]["kmPerHour"] + ' km/s</b></center><br><button style="margin-top: 10px; background-color: white; border: 1px solid #ccc; border-radius: 5px; display: block; padding: 0px;" onclick="goToGoogleMapsDirection(\'https://maps.google.com/?q=' + clickLat + ',' + clickLon + '&output=embed\');"><img style="display: block; margin: 0px; padding: 0px; width: 30px;" src="../Content/googleMapsIcon.png"></button></div>'
+                            });
+
+                            google.maps.event.addListener(marker, 'click', function () {
+                                this['infowindow'].open(map, this);
+                            });
+
+
+                            marker.setMap(map2);
+                            oldMarkers2.push(marker);
+                        }
+
+                        map2.setCenter({ lat: data[0]["lat"], lng: data[0]["lng"] });
+                    }
+                }
+
+                if (id == lastFocusedDeviceId) {
+                    setTimeout(function () {
+                        focusToOneDevice(id);
+                    }, 5000);
+                }
+            }
+        });
+    }
+
+    function goToGoogleMapsDirection(url) {
+        document.getElementById("googleMapsGoIframe").src = url;
+        $("#googleMapsGoIframeDiv").fadeIn(250);
+    }
+
+    function getDevicesToShow() {
+        $.ajax({
+            url: '@Url.Action("GetDevicesToShow","Home")',
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                if (!$(".mapInfoDiv").is(":visible")) {
+                    $("#totalDeviceCount").html("Araçlar&nbsp;(" + data.length + " Adet)&nbsp;");
+                    $("#listContainer").html('');
+
+                    for (var i = 0; i < oldMarkers.length; i++) {
+                        oldMarkers[i].setMap(null);
+                    }
+
+                    oldMarkers = [];
+
+                    for (var i = 0; i < data.length; i++) {
+                        var clickLat = data[i]["lat"].toString().replace(",", ".");
+                        var clickLon = data[i]["lng"].toString().replace(",", ".");
+
+                        var icon = {
+                            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                            scale: 3,
+                            fillColor: (data[i]["ioStatus"] == "Açık" ? "#0084ad" : "#ff4343"),
+                            fillOpacity: 0.8,
+                            strokeWeight: 1,
+                            rotation: data[i]["directionDegree"],
+                            labelOrigin: new google.maps.Point(0, 0),
+                        };
+
+
+                        var marker = new MarkerWithLabel({
+                            map: map,
+                            position: { lat: data[i]["lat"], lng: data[i]["lng"] },
+                            icon: icon
+                        });
+
+                        marker['infowindow'] = new google.maps.InfoWindow({
+                            content: '<div class="mapInfoDiv" style="padding: 5px;"<center><span style="font-size: 17px;">' + data[i]["carPlateNumber"] + '</span><br><b style="color: black; font-weight: bold;">' + data[i]["kmPerHour"] + ' km/s</b></center><br><button style="margin-top: 10px; background-color: white; border: 1px solid #ccc; border-radius: 5px; display: block; padding: 0px;" onclick="goToGoogleMapsDirection(\'https://maps.google.com/?q=' + clickLat + ',' + clickLon + '&output=embed\');"><img style="display: block; margin: 0px; padding: 0px; width: 30px;" src="../Content/googleMapsIcon.png"></button></div>'
+                        });
+
+                        google.maps.event.addListener(marker, 'click', function () {
+                            this['infowindow'].open(map, this);
+                        });
+
+                        marker.setMap(map);
+                        oldMarkers.push(marker);
+
+                        var item = data[i];
+
+                        $("#listContainer").append(`<table onclick="$('#map2').show(); $('#map').hide(); lastFocusedDevicePlateNumber = '` + item.carPlateNumber + `'; lastFocusedDeviceId = ` + item.deviceId + `; focusToOneDevice(` + item.deviceId + `)" class="" cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                                                    <tr>
+                                                        <td style="vertical-align: top; padding: 10px" rowspan="3">
+                                                            <i style="color: `+ (item.ioStatus == "Açık" ? "limegreen" : "red") + `" class="fa fa-circle"></i>
+                                                        </td>
+                                                        <td style="padding-top: 10px; padding-bottom: 5px;" colspan="3">
+                                                            <h6 style="margin: 0px !important;">`+ item.carPlateNumber + `</h6>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-bottom: 5px;" colspan="3">
+                                                            <p style="font-size: 11px;">`+ item.location + `</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="font-size: 13px; width: 25%;">`+ item.totaLkm + ` km</td>
+                                                        <td style="font-size: 13px; width: 25%;">`+ item.kmPerHour + ` km/s</td>
+                                                        <td style="font-size: 13px; width: 50%; text-align: right; padding-right: 15px;">`+ item.date + `</td>
+                                                    </tr>
+                                                </table>
+                                                <hr style="margin-top: 5px; margin-bottom: 5px;" />`);
+                    }
+                }
+
+                setTimeout(getDevicesToShow, 5000);
+            }
+        });
+    }
+
+    function correctLat(degree, lat) {
+        if (degree > 270) {
+            while (degree > 270) {
+                degree -= 1;
+                lat -= 0.000001;
+            }
+        }
+        else {
+            while (degree < 270) {
+                degree += 1;
+                lat += 0.000001;
+            }
+        }
+
+        return lat;
+    }
+
+    function oynatBakalim() {
+        if (isGecmisKonumPlaying) {
+            var data = gecmisKonumData;
+
+            gecmisKonumDataIndex++;
+
+            var icon = {
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                scale: 5,
+                fillColor: (data[gecmisKonumDataIndex]["ioStatus"] == "Açık" ? "blue" : "red"),
+                fillOpacity: 0.8,
+                strokeWeight: 1,
+                rotation: data[gecmisKonumDataIndex]["directionDegree"],
+                labelOrigin: new google.maps.Point(0, 0), // labelOrigin,
+            };
+
+            var obj = { lat: data[gecmisKonumDataIndex]["latitude"], lng: data[gecmisKonumDataIndex]["longtitude"] };
+            animatedMove(gecmisKonumMarker, 0.1, gecmisKonumMarker.position, obj);
+            gecmisKonumMarker.setIcon(icon);
+            map2.panTo({ lat: data[gecmisKonumDataIndex]["latitude"], lng: data[gecmisKonumDataIndex]["longtitude"] });
+
+
+
+
+
+            var day = data[gecmisKonumDataIndex]["createDate"].split("-")[2].split('T')[0];
+            var month = data[gecmisKonumDataIndex]["createDate"].split("-")[1];
+            var year = data[gecmisKonumDataIndex]["createDate"].split("-")[0];
+
+            var hour = data[gecmisKonumDataIndex]["createDate"].split("T")[1].split(':')[0];
+            var minute = data[gecmisKonumDataIndex]["createDate"].split("T")[1].split(':')[1];
+
+            var tamTarih = day + "/" + month + "/" + year + " " + hour + ":" + minute;
+
+            $("#playInfoTarih").html("Tarih: " + tamTarih);
+            $("#playInfoAnlikHiz").html("Anlık Hız: " + data[gecmisKonumDataIndex]["kmPerHour"] + " km/s");
+            $("#playInfoAdres").html(data[gecmisKonumDataIndex]["locationString"]);
+
+            setTimeout(oynatBakalim, playInterval);
+        }
+    }
+
+    function animatedMove(marker, t, current, moveto) {
+        var lat = current.lat();
+        var lng = current.lng();
+
+        var deltalat = (moveto.lat - current.lat()) / 100;
+        var deltalng = (moveto.lng - current.lng()) / 100;
+
+        var delay = 10 * t;
+        for (var i = 0; i < 100; i++) {
+            (function (ind) {
+                setTimeout(
+                    function () {
+                        var lat = marker.position.lat();
+                        var lng = marker.position.lng();
+                        lat += deltalat;
+                        lng += deltalng;
+                        latlng = new google.maps.LatLng(lat, lng);
+                        marker.setPosition(latlng);
+                    }, delay * ind
+                );
+            })(i)
+        }
+    }
+
+    function showGecmis(startDate, endDate) {
+        isGecmisKonumShowing = true;
+        gecmisKonumDataIndex = 0;
+        $("#loadingDiv").show();
+
+        for (var i = 0; i < oldMarkers2.length; i++) {
+            oldMarkers2[i].setMap(null);
+        }
+
+        oldMarkers2 = [];
+
+        $.ajax({
+            url: '@Url.Action("GetGecmisKonum", "Home")',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                "_deviceId": lastFocusedDeviceId,
+                "_startDate": startDate,
+                "_endDate": endDate
+            },
+            success: function (data) {
+                gecmisKonumData = data;
+
+                for (var i = 0; i < gecmisKonumData.length; i++) {
+                    if (gecmisKonumData[i].ioStatus.endsWith("0")) {
+                        gecmisKonumDataIndex++;
+                    }
+                    else {
+                        i = gecmisKonumData.length + 5;
+                    }
+                }
+
+
+                if (gecmisKonumDataIndex >= gecmisKonumData.length) {
+                    gecmisKonumDataIndex = 0;
+                }
+
+                $("#gecmisKonumTarihSecimi").fadeOut(250);
+
+                var flightPlanCoordinates = [];
+
+                for (var i = 0; i < data.length; i++) {
+                    flightPlanCoordinates.push({ lat: data[i]["latitude"], lng: data[i]["longtitude"] });
+                }
+
+                 flightPath = new google.maps.Polyline({
+                    path: flightPlanCoordinates,
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.5,
+                    strokeWeight: 2
+                });
+
+                flightPath.setMap(map2);
+
+                map2.setCenter({ lat: data[gecmisKonumDataIndex]["latitude"], lng: data[gecmisKonumDataIndex]["longtitude"] });
+
+
+                var icon = {
+                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                    scale: 5,
+                    fillColor: (data[gecmisKonumDataIndex]["ioStatus"] == "Açık" ? "blue" : "red"),
+                    fillOpacity: 0.8,
+                    strokeWeight: 1,
+                    rotation: data[gecmisKonumDataIndex]["directionDegree"],
+                    labelOrigin: new google.maps.Point(0, 0), // labelOrigin,
+                };
+
+                gecmisKonumMarker = new MarkerWithLabel({
+                    map: map,
+                    position: { lat: data[gecmisKonumDataIndex]["latitude"], lng: data[gecmisKonumDataIndex]["longtitude"] },
+                    icon: icon,
+                });
+
+                gecmisKonumMarker.setMap(map2);
+
+                $("#topPlayInformation").show();
+
+                var day = data[gecmisKonumDataIndex]["createDate"].split("-")[2].split('T')[0];
+                var month = data[gecmisKonumDataIndex]["createDate"].split("-")[1];
+                var year = data[gecmisKonumDataIndex]["createDate"].split("-")[0];
+
+                var hour = data[gecmisKonumDataIndex]["createDate"].split("T")[1].split(':')[0];
+                var minute = data[gecmisKonumDataIndex]["createDate"].split("T")[1].split(':')[1];
+
+                var tamTarih = day + "/" + month + "/" + year + " " + hour + ":" + minute;
+
+                $("#playInfoTarih").html("Tarih: " + tamTarih);
+                $("#playInfoAnlikHiz").html("Anlık Hız: " + data[gecmisKonumDataIndex]["kmPerHour"] + " km/s");
+                $("#playInfoPlaka").html(lastFocusedDevicePlateNumber);
+                $("#playInfoAdres").html(data[gecmisKonumDataIndex]["locationString"]);
+                $("#bottomButtonsIn").hide();
+                $("#bottomButtonsPlayButtons").show();
+                $("#loadingDiv").hide();
+
+            }
+        });
+    }
+</script>

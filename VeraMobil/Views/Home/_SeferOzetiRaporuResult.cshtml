@@ -1,0 +1,65 @@
+﻿@model List<VeraDAL.DB.SeferOzetiRaporuObjectRepo>
+
+
+<div style="width: 100%; font-family: Verdana;" class="col-md-12">
+    <h2>Sefer Özeti Raporu</h2>
+    <div class="mt-1 mb-3" style="border-bottom:1px solid black"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <p>Araç: @ViewBag.PlateNumber</p>
+            <p>Tarih: @DateTime.Now.ToString("dd.MM.yyyy HH:mm")</p>
+            <p>Tarih Aralığı: @ViewBag.ReportStartDate / @ViewBag.ReportEndDate</p>
+            <p>Min. Mesafe: @Model.Select(x => Convert.ToInt32(x.EndTotalKm) - Convert.ToInt32(x.StartTotalKm)).OrderBy(x => x).FirstOrDefault() km</p>
+            <p>Min. Süre: @ViewBag.MinSure</p>
+            <p>Max. Mesafe: @Model.Select(x => Convert.ToInt32(x.EndTotalKm) - Convert.ToInt32(x.StartTotalKm)).OrderByDescending(x => x).FirstOrDefault() km</p>
+            <p>Max. Süre: @ViewBag.MaxSure</p>
+            <p>Sefer Sayısı: @Model.Where(x => Convert.ToInt32(x.Mesafe) > 0).ToList().Count</p>
+        </div>
+    </div>
+
+    <table class="table mt-5" border="1" style="font-size: 12px; border-collapse: collapse; font-family: Verdana; width: 100%; border:1px solid black; text-align: center;">
+        <thead>
+            <tr>
+                <th>Kalkış</th>
+                <th>Varış</th>
+                <th>Süre</th>
+                <th>Max. Hız</th>
+                <th>Ort. Hız</th>
+                <th>Mesafe</th>
+                <th>Toplam KM</th>
+                <th>Kalkş Noktası</th>
+                <th>Varış Noktası</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model.Where(x => Convert.ToInt32(x.Mesafe) > 0).ToList())
+                {
+                    <tr>
+                        <td style="padding: 5px;">@Html.Raw(Convert.ToDateTime(item.KalkisZamani).ToString("dd.MM.yyyy HH:mm").Replace(" ", "<br>"))</td>
+                        <td style="padding: 5px;">@Html.Raw(Convert.ToDateTime(item.VarisZamani).ToString("dd.MM.yyyy HH:mm").Replace(" ", "<br>"))</td>
+                        <td style="padding: 5px;">@item.Sure</td>
+                        <td style="padding: 5px;">@item.MaxHiz km/s</td>
+                        <td style="padding: 5px;">@item.OrtHiz km/s</td>
+                        <td style="padding: 5px;">@item.Mesafe km</td>
+                        <td style="padding: 5px;">@item.ToplamKm km</td>
+                        <td style="padding: 5px;">@item.KalkisPozisyon</td>
+                        <td style="padding: 5px;">@item.VarisPozisyon</td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td style="text-align: left; padding: 5px;" colspan="2">Toplam:</td>
+                <td style="padding: 5px;">@ViewBag.ToplamGecenSureString</td>
+                <td style="padding: 5px;"></td>
+                <td style="padding: 5px;"></td>
+                <td style="padding: 5px;">@Model.Sum(x => Convert.ToInt32(x.Mesafe)) km</td>
+                <td style="padding: 5px;"></td>
+                <td style="padding: 5px;"></td>
+                <td style="padding: 5px;"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,163 @@
+﻿
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+<!--
+Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.7
+Version: 4.7.5
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Dribbble: www.dribbble.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
+Renew Support: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
+License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
+-->
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+
+<head>
+	<meta charset="utf-8" />
+	<title>Vera | User Login</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<meta content="Preview page of Metronic Admin Theme #1 for " name="description" />
+	<meta content="" name="author" />
+	<!-- BEGIN GLOBAL MANDATORY STYLES -->
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+	<link href="~/Content/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+	<link href="~/Content/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+	<link href="~/Content/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="~/Content/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+	<!-- END GLOBAL MANDATORY STYLES -->
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<link href="~/Content/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+	<link href="~/Content/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN THEME GLOBAL STYLES -->
+	<link href="~/Content/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+	<link href="~/Content/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+	<!-- END THEME GLOBAL STYLES -->
+	<!-- BEGIN PAGE LEVEL STYLES -->
+	<link href="~/Content/assets/pages/css/login-5.min.css" rel="stylesheet" type="text/css" />
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- END PAGE LEVEL STYLES -->
+	<!-- BEGIN THEME LAYOUT STYLES -->
+	<!-- END THEME LAYOUT STYLES -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+	<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<!-- END HEAD -->
+
+<body class=" login">
+	<!-- BEGIN : LOGIN PAGE 5-1 -->
+	<div class="user-login-5">
+		<div class="row bs-reset">
+			<div class="col-md-8 bs-reset mt-login-5-bsfix">
+				<div class="login-bg" style="background-image:url(/Content/assets/pages/img/login/bg1.jpg)">
+					<img class="login-logo" style="width: 10%;" />
+				</div>
+			</div>
+			<div class="col-md-4 login-container bs-reset mt-login-5-bsfix">
+				<div class="login-content" style="margin-top: 15% !important; padding: 0 40px;">
+					<h2 style="color:#32c5d2; font-size: 45px; text-align: center;"><strong>Vera Admin Login</strong></h2>
+					<div class="col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">
+						<i class="material-icons" style="font-size:50px; border:2px solid #E5E5E5; border-radius:50%; width:100px; height:100px; line-height:100px; color:#17a2b8; border-color:#17a2b8; margin-top:20px; text-align: center;">location_on</i>
+					</div>
+
+					<div class="login-form">
+						<div class="alert alert-danger display-hide">
+							<button class="close" data-close="alert"></button>
+							<span>Enter any username and password. </span>
+						</div>
+						<div class="row">
+							<div class="col-xs-12" style="margin-top: 50px;">
+								<label style="font-size: 22px;">Kullanıcı adı</label>
+								<input id="userCode" class="form-control form-control-solid placeholder-no-fix form-group" type="text" autocomplete="off"  style="font-size:20px;"   />
+							</div>
+							<div class="col-xs-12" style="margin-top: 15px;">
+								<label style="font-size: 22px;">Şifre</label>
+								<input id="userPassword" class="form-control form-control-solid placeholder-no-fix form-group" type="password" autocomplete="off" style="font-size:20px;"   />
+							</div>
+						</div>
+						<button onclick="Login()" class="btn green" style="width: 50%; margin-left: 25%; text-align: center; font-size: 30px;" >Giriş</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END : LOGIN PAGE 5-1 -->
+	<!--[if lt IE 9]>
+	<script src="~/Content/assets/global/plugins/respond.min.js"></script>
+	<script src="~/Content/assets/global/plugins/excanvas.min.js"></script>
+	<script src="~/Content/assets/global/plugins/ie8.fix.min.js"></script>
+	<![endif]-->
+	<!-- BEGIN CORE PLUGINS -->
+	<script src="~/Content/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+	<script src="~/Content/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="~/Content/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+	<script src="~/Content/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+	<script src="~/Content/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+	<script src="~/Content/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+	<!-- END CORE PLUGINS -->
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<script src="~/Content/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+	<script src="~/Content/assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+	<script src="~/Content/assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+	<script src="~/Content/assets/global/plugins/backstretch/jquery.backstretch.min.js" type="text/javascript"></script>
+	<!-- END PAGE LEVEL PLUGINS -->
+	<!-- BEGIN THEME GLOBAL SCRIPTS -->
+	<script src="~/Content/assets/global/scripts/app.min.js" type="text/javascript"></script>
+	<!-- END THEME GLOBAL SCRIPTS -->
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="~/Content/assets/pages/scripts/login-5.min.js" type="text/javascript"></script>
+	<!-- END PAGE LEVEL SCRIPTS -->
+	<!-- BEGIN THEME LAYOUT SCRIPTS -->
+	<!-- END THEME LAYOUT SCRIPTS -->
+	<script> 
+	function Login() {  
+		
+		var userCode = $('#userCode').val();
+		var userPassword = $('#userPassword').val();
+
+		if (userCode == "" || userPassword == "") {
+			swal('Hata!', 'Lütfen giriş alanlarını boş bırakmayınız!!', 'error');
+			return;
+		}
+		else {
+		$.ajax({
+			url: '@Url.Action("ControlLogin", "Login")',
+			type: 'POST',
+			dataType: 'json',  
+			data: {
+				"_userCode": userCode,
+				"_userPassword" :userPassword
+			},
+		    success:function (data) {
+				if (data == true) {
+					window.location = '@Url.Action("Index", "Home")';
+				}
+				else {
+					swal("Hata!", "Kullanıcı Adı yada şifre yanlış , tekrar deneyiniz.", "warning");
+				}
+            } 
+		}); 
+	    } 
+			} 
+	$('body').on('keydown', function (e) {
+        if (e.which == 13) {
+            Login();
+        }
+    });
+	</script>
+</body>
+
+</html>

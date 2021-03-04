@@ -1,0 +1,67 @@
+﻿@model List<VeraDAL.Entities.Employee>
+<table id="companyEmployeeTable" class="table table-bordered table-striped font-10">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Görevli Adı</th>
+            <th>Görevli Soyadı</th>
+            <th>Görevli No</th>
+            <th>Doğum Tarihi</th>
+            <th>Cep Telefonu</th>
+            <th>Ev Telefonu</th>
+            <th>Görev Tipi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><a href="javascript:;"  onclick="DeleteCompanyEmployee(@item.Id)"><i style="color:red" class="fa fa-trash fa-lg" aria-hidden="true"></i></a></td>
+                <td><a href="javascript:;" onclick="GetCompanyEmployeeToUpdate(@item.Id)"><i class="fa fa-cog fa-lg"></i></a></td>
+                <td>@item.Name</td>
+                <td>@item.Surname</td>
+                <td>@item.EmployeeNo</td>
+                <td>@item.BirthDate</td>
+                <td>@item.PhoneNumber</td>
+                <td>@item.HomePhoneNumber</td>
+                <td>@item.Occupation</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+
+     function DeleteCompanyEmployee(empId)
+            {
+                swal({
+                title: "Emin misiniz?",
+                text: "Bu görevliyi silerseniz geri alamayacaksınız!!",
+                icon: "warning",
+                buttons: [
+                'Hayır, iptal et!',
+                'Evet, eminim!'
+                ],
+              dangerMode: true,
+              }).then(function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: '@Url.Action("DeleteCompanyEmployee", "Home")',
+                    type: 'POST',
+                    dataType: 'json',
+                        data: {
+                            '_employeeId': empId
+                        },
+                    success: function (data) {
+                         if (data) {
+                             swal('Başarılı!', 'Görevli Silindi!', 'success');
+                             getEmployeeList();
+                         } 
+                        }
+                     });
+                 }
+              })
+           
+            }
+    
+</script>

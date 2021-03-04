@@ -1,0 +1,157 @@
+﻿@model List<VeraDAL.Models.DeviceRepo>
+
+
+<table class="display table table-striped table-bordered table-hover exampleTable" id="exampleSupportlist" style="border:solid; border-color:lightgray;max-width:1000px;">
+    <thead>
+        <tr>
+            <th><b>@*Düzenle*@</b></th>
+            <th><b>@*Ayarlar*@</b></th>
+            <th>@*Satır Güncelle*@</th>
+            <th> Plaka </th>
+            <th> Cihaz ID(Comm_id) </th>
+            <th> Cihaz Gsm No </th>
+            <th> Aktiflik </th>
+            <th> Kontak </th>
+            <th> Son Konum </th>
+            <th> Son Aktiflik Zamanı </th>
+            @*<th> Son Konum Zamanı </th>*@
+            <th> Anlık Hız </th>
+            <th> Araç Son Km Bilgisi </th>
+            <th> Teknik Not</th>
+            <th> Bayi Adı  </th>
+            <th> Şirket </th>
+            <th> Motor Blokajı </th>
+            <th>Kullanım Durumu </th>
+            <th>RFID </th>
+            <th> Yazılım Versiyonu </th>
+            <th> Kapı </th>
+            @*<th> Isı </th>
+                <th> Taze Isı </th>
+                <th> Donmuş Isı </th>
+                <th>  Isı 3 </th>
+                <th>  Nem </th>
+                <th>  Eski Isı </th>*@
+
+            <th> IMEI No </th>
+            <th> Montaj Tarihi </th>
+            <th>Montajı Yapan </th>
+            <th> Aktivasyon </th>
+            <th> G Sensor  </th>
+            <th>RFID Motor Blokaj</th>
+            <th>RFID Motor Blokaj Durumu </th>
+            <th>Cihaz Montaj Türü </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><center><a href="javascript:GetDeviceById(@item.Id)"><i style="color:green;   " class="fa fa-edit fa-lg"></i></a></center></td>
+                <td><center><a href="javascript:;" onclick="showSubMenu(@item.Id,this)"><i style="color:blue;   " class="fa fa-cogs fa-lg"></i></a> </center> </td>
+                <td>
+                    <center> <a class="fa fa-pencil fa-lg" onclick="SaveInfo(@item.Id)"></a></center>
+                </td>
+                <td> @item.CarPlateNumber </td>
+                <td> @item.DeviceId</td>
+                <td> @item.DeviceGsmNumber </td>
+                <td>
+                    @if (item.Aktiflik == true)
+                    {
+                        <center> <i style="color:lawngreen;  " class="fa fa-check-circle-o fa-2x " aria-hidden="true"></i></center>
+                    }
+                    else
+                    {
+                        @*<i  class="fa fa-times-circle-o" aria-hidden="true"></i>*@
+                        <center><i style="color:red;  " class="fa fa-times-circle fa-2x" aria-hidden="true"></i></center>
+                    }
+                </td>
+                <td>
+                    @if (item.Aktiflik == true && item.Kontak == true)
+                    {
+                        <center> <i style="color:lawngreen;" class="fa fa-check-circle-o fa-2x " aria-hidden="true"></i></center>
+                    }
+                    else
+                    {
+                        @*<i  class="fa fa-times-circle-o" aria-hidden="true"></i>*@
+                        <center><i style="color:red; " class="fa fa-times-circle fa-2x" aria-hidden="true"></i></center>
+                    }
+                </td>
+
+                <td>@Html.Raw(item.SonKonum.Replace(" ", "&nbsp;")) </td>
+                <td>@item.SonAktiflikZamani </td>
+                @*<td>@(item.SonKonumZamani.Contains("0001") ? "" : item.SonKonumZamani) </td>*@
+                <td>@item.AnlikHiz</td>
+                <td> @item.AracSonKmBilgisi</td>
+                <td> <input type="text" value="@item.TechnicalNote" id="technicalNote@(item.Id)" />  </td>
+                <td> @item.DistributorName</td>
+                <td> @item.CompanyName </td>
+                <td> Motor Blokajı </td>
+                <td> @item.UsingStatus </td>
+                <td>RFID</td>
+                <td> @item.SoftwareVersion </td>
+                <td> @(item.DoorSensor == true ? "Var" : "Yok") </td>
+                @*<td> Isı </td>
+                    <td> Taze Isı  </td>
+                    <td> Donmuş Isı  </td>
+                    <td> Isı 3 </td>
+                    <td> Nem </td>
+                    <td>Eski Isı</td>*@
+                <td> @item.IMEINumber </td>
+                <td><input id="montageDate@(item.Id)" type="date" value="@(item.MontageDate == null ? "" : Convert.ToDateTime(item.MontageDate).ToString("yyyy-MM-dd"))" style="height:30px;" class="form-control"></td>
+                <td><input type="text" value="@item.MontagePerson" id="montagePerson@(item.Id)" />   </td>
+                <td> @(item.Status == 1 ? "Aktif" : "Pasif") </td>
+                <td> @(item.GSensor == true ? "Var" : "Yok") </td>
+                <td>@(item.RFIDEngineBlock == true ? "Var" : "Yok")</td>
+                <td>@(item.RFIDEngineBlockStatus == true ? "Aktif" : "Pasif") </td>
+                <td>@item.DeviceMontageType  </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+    $(document).ready(function () {
+        $('#exampleSupportlist').DataTable({
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
+            },
+            "pageLength": 10,
+            "lengthChange": false,
+            "retrieve": true,
+            "export": true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5', 
+            ]
+        });
+    });
+	//$("#sample_1").dataTable({
+	//	"language": {
+	//		"url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
+	//	}
+	//});
+	function SaveInfo(id) {
+		var montageDate = $("#montageDate" + id).val();
+		var montagePerson = $("#montagePerson" + id).val();
+		var technicalNote = $("#technicalNote" + id).val();
+		$.ajax({
+            url: '@Url.Action("SaveInfo", "Support")',
+            type: 'POST',
+            dataType: 'json',
+             data: {
+				 "_id": id,
+				 "_montageDate": montageDate,
+				 "_montagePerson": montagePerson,
+				 "_technicalNote":technicalNote
+            },
+            success: function (data) {
+                if (data) {
+                    swal('Başarılı!', 'Bilgiler Kaydedildi!', 'success');
+                }
+            }
+        })
+	}
+
+</script>

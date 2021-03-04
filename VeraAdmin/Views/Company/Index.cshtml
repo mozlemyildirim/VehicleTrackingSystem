@@ -1,0 +1,922 @@
+﻿@{
+    ViewData["Title"] = "Şirket Bilgileri";
+}
+
+@model CompanyViewModel
+@{
+    var activeUser = ViewBag.ActiveUser as VeraDAL.Entities.User;
+
+}
+
+<div class="modal fade" id="exampleModalUserInformation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content modal-lg">
+            <div class="modal-header ">
+                <h3 class="modal-title text-center modal-lg" id="exampleModalLongTitle"><b>Kullanıcı Bilgileri</b></h3>
+                <button style="margin-top: -18px !important;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body modal-lg">
+                <div class="portlet-body" id="userTableContainer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*user update/save modal*@
+
+
+
+<div class="modal fade" id="userFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-center" id="exampleModalLongTitle"><b>Kullanıcı İşlemleri</b></h3>
+                <button style="margin-top: -18px !important;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="compUserUserId" value="0" style="display:none;"></div>
+            <div id="companyIdForSavingUser" style="display:none;"></div>
+            <div class="modal-body">
+                <div class="form-body">
+                    <div class="col-md-6 col-sm-12" style="margin-top:15px;">
+                        <div class="form-group ">
+                            <label>* Kullanıcı Kodu :</label>
+                            <input id="compUserUserCode" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group ">
+                            <label>* Şifre :</label>
+                            <input id="compUserpassword" type="password" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label> İsim :</label>
+                            <input id="compUserName" type="text" class="form-control input-sm" />
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-sm-12" style="margin-top:15px;">
+
+                        <div class="form-group">
+                            <label>Telefon :</label>
+                            <input id="compUserTelephone" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Mail :</label>
+                            <input id="compUserMail" type="text" placeholder="email@@hotmail.com" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label> Soyisim :</label>
+                            <input id="compUserSurname" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="SaveUser()" style="width: 100%; margin-top:23px;" class="btn btn-primary">  KAYDET </button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="padding: 15px !important;">
+    <div class="portlet light bordered">
+        <div class="portlet-title">
+            <div class="caption font-dark">
+                <i class="icon-settings font-dark"></i>
+                <span class="caption-subject bold uppercase">Şirket Bilgileri</span>
+            </div>
+            <div class="tools"> </div>
+        </div>
+        @*<div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+
+                <div style="float:right;  ">
+                    <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                        <div class="col-md-6">
+                            <input type="file" id="fileUploader" name="fileUploader" accept=".xls, .xlsx" style="display:none;" />
+                            <button onclick="$('#fileUploader').click()" class="btn btn-secondary" ><i class="fa fa-plus fa-lg"></i> Excel Şirket Ekle</button>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                        <div class="col-md-6">
+                            <input type="file" id="fileUploader" name="fileUploader" accept=".xls, .xlsx" style="display:none;" />
+                            <button onclick="location.href='@Url.Action("ExportFile","Company")'" class="btn btn-secondary" style="width: 149px;"><i class="fa fa-file-excel-o fa-lg"></i> Excel'e Aktar</button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 ">
+                    @{
+                        if (activeUser.UserTypeId != 1)
+                        {
+                            <button onclick="ShowCompanyModal()" class="btn btn-lg btn-info table-group-action-submit " style="float:left; margin-top: 30px;">
+                                <i class="fa fa-plus"></i> Şirket Ekle
+                            </button>
+                        }  /*user login restriction*/
+                    }
+                    user information
+                </div>
+            </div>*@
+
+        <div class="row">
+            <div class="col-md-7">
+                <h4 style="display: inline-block; ">Arama Kriterleri</h4>
+                <div id="id" value="0" style="display:none;"></div>
+                <div id="userId" value="0" style="display:none;"></div>
+                <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                    <div class="col-md-2 " style="height: 30px;">
+                        <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <label style="margin-bottom: 0px !important;">Şirket Kodu</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-4 " style="width:25%">
+                        <input type="text" id="firmaKodu" class="form-control input-inline input-small input-sm"  style="width:100% !important"/>
+                        @*<select id="firmaKodu" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                            <option value="">Hepsi</option> 
+                        </select>*@
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                    <div class="col-md-2 " style="height: 30px;">
+                        <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <label style="margin-bottom: 0px !important; font-size: 13px;">Firma Tipi</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-4 " style="width:25%">
+                        <select id="firmaTipi" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                            <option value="0">Hepsi</option>
+                            @foreach (var item in Model.CompanyTypeList)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                    <div class="col-md-2" style="height: 30px;">
+                        <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <label style="margin-bottom: 0px !important; font-size: 13px;">Kullanım Durumu</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-4 " style="width:25%">
+                        <select id="kullanimDurumu" class="table-group-action-input form-control input-inline input-small input-sm" style="width: 100% !important;">
+                            <option value="-1">Hepsi</option>
+                            <option value="1">Kullanımda</option>
+                            <option value="0">Kullanım Dışı</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                    <div class="col-md-2" style="height: 30px;">
+                        <table style="width: 100%; height: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <label style="margin-bottom: 0px !important; font-size: 13px;">   </label>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-3" style="width:25%">
+                        <button onclick="getList()" class="btn rounded-3 btn-primary table-group-action-submit pull-right " >
+                            <i class="fa fa-check"></i> Listele
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div style="float:right;">
+                    @{
+                        if (activeUser.UserTypeId != 1)
+                        {
+                            <button onclick="ShowCompanyModal()" class="btn rounded-3 btn-lg btn-info table-group-action-submit " style="width:100%">
+                                <i class="fa fa-plus"></i> Şirket Ekle
+                            </button>
+                        }  /*user login restriction*/
+                    }
+                    <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                        <div class="col-md-6">
+                            <input type="file" id="fileUploader" name="fileUploader" accept=".xls, .xlsx" style="display:none;" />
+                            <button onclick="$('#fileUploader').click()" class="btn btn-secondary"><i class="fa fa-plus fa-lg"></i> Excel Şirket Ekle</button>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+                        @*<div class="col-md-6">
+                            <input type="file" id="fileUploader" name="fileUploader" accept=".xls, .xlsx" style="display:none;" />
+                            <button onclick="location.href='@Url.Action("ExportFile","Company")'" class="btn btn-secondary" style="width: 149px;"><i class="fa fa-file-excel-o fa-lg"></i> Excel'e Aktar</button>
+
+                        </div>*@
+
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body" id="tableContainer" >
+
+            </div>
+            <div class="col-md-12 portlet-body" id="loadingContainer" style="display: none; margin-top: 15px;  margin-bottom: 15px;">
+                <center>
+                    <img style="width: 100px;" src="https://thumbs.gfycat.com/ObviousQuarrelsomeIntermediateegret-size_restricted.gif" />
+                </center>
+            </div>
+        </div>
+    </div>
+
+</div> @*filtering form*@
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-center" id="exampleModalLongTitle"><b>Şirket Bilgileri</b></h3>
+                <button style="margin-top: -18px !important;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-body">
+                    <div class="col-md-4 col-sm-12" style="margin-top:15px;">
+                        <div class="form-group">
+                            <label>Ana Şirket Kodu</label>
+                            <select id="mainCompanyId" class="form-control input-sm">
+                                <option value="0">Seçiniz...</option>
+                                @foreach (var item in Model.CompanyList.OrderBy(x => x.CompanyDescription))
+                                {
+                                    <option value="@item.Id">@item.CompanyDescription</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Bayi Seçimi</label>
+                            <select id="distributorId" class="form-control input-sm">
+                                @foreach (var item in Model.Distributors)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>* Şirket Kodu</label>
+                            <input id="companyCode" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>* Şirket Tanımı</label>
+                            <input id="companyDescription" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Firma Tipi</label>
+                            <select id="companyTypeId" class="form-control input-sm">
+                                <option value="0">Seçiniz...</option>
+                                @foreach (var item in Model.CompanyTypeList)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Adres 1</label>
+                            <input id="address1" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Muhasebe Hesap Kodu</label>
+                            <input id="accountingCode" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>İş Ortağı</label>
+                            <select id="companyPartnerId" class="form-control input-sm">
+                                <option value="0">Seçiniz...</option>
+                                @foreach (var item in Model.CompanyPartners)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+
+
+                            </select>
+                        </div>
+
+
+
+                    </div>
+                    <div class="col-md-4 col-sm-12" style="margin-top:15px;">
+                        <div class="form-group">
+                            <label>Teknik Rapor</label>
+                            <select id="technicalReport" class="form-control input-sm">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-top:15px;">
+                            <label>Şirket Grup Adı</label>
+                            <input id="companyGroupName" type="text" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Teknik E-mail 1</label>
+                            <input id="technicalEmail1" type="text" placeholder="example@@gmail.com" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Teknik E-mail 2</label>
+                            <input id="technicalEmail2" type="text" placeholder="example@@gmail.com" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Teknik E-mail 3</label>
+                            <input id="technicalEmail3" type="text" placeholder="example@@gmail.com" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Şirket</label>
+                            <select id="companyStatus" class="form-control input-sm">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Alarm SMS</label>
+                            <select id="alarmSms" class="form-control input-sm">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sektör</label>
+                            <select id="sectorId" class="form-control input-sm">
+                                <option value="0">Seçiniz...</option>
+                                @foreach (var item in Model.Sectors)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4 col-sm-12" style="margin-top:15px;">
+                        <div class="form-group">
+                            <label>* Yetkili Kodu</label>
+                            <input id="userCode" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>	* Yetkili Şifresi</label>
+                            <input id="userPassword" type="password" class="form-control input-sm" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>* Yetkili Kişi Adı</label>
+                            <input id="userName" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>* Yetkili Kişi Soyadı</label>
+                            <input id="userSurname" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Yetkili Mobil</label>
+                            <input id="userPhone" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Yetkili-Email</label>
+                            <input id="userEmail" placeholder="example@@gmail.com" type="text" class="form-control input-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label>Kullanıcı Aktiflik</label>
+                            <select id="userStatus" class="form-control input-sm">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Platform</label>
+                            <select id="platformId" class="form-control input-sm">
+                                <option value="0">Seçiniz...</option>
+                                @foreach (var item in Model.Platforms)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="button" onclick="SaveCompany();" style="width: 100%; margin-top:23px;" class="btn btn-primary">Kaydet</button>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  @*modal form*@
+
+<script>
+		function ShowUserModal() {
+		$("#userFormModal input[type='text']").val('');
+		$("#userFormModal select").val('0');
+		$('#userFormModal').modal('show');
+		$("#compUserUserId").val('0');
+
+	}
+	function ShowCompanyModal() {
+		$("#exampleModalCenter input[type='text']").val('');
+		$("#exampleModalCenter select").val('0');
+		$('#exampleModalCenter').modal('show');
+    }
+    	 $(document).ready(function () {
+	        //getList(true);
+		});
+    function SaveCompany() {
+
+
+        debugger;
+        var id = $("#id").val();
+        var mainCompanyId = $("#mainCompanyId").val();
+        var companyTypeId = $("#companyTypeId").val();
+        var companyPartnerId = $("#companyPartnerId").val();
+        var platformId = $("#platformId").val();
+        var distributorId = $("#distributorId").val();
+        var sectorId = $("#sectorId").val();
+        var companyReportId = $("#companyReportId").val();
+        var companyCode = $("#companyCode").val();
+        var companyDescription = $("#companyDescription").val();
+        var address1 = $("#address1").val();
+		var phone = $("#phone").val();
+        var userCode = $("#userCode").val();
+        var userPassword = $("#userPassword").val();
+        var userName = $("#userName").val();
+        var userSurname = $("#userSurname").val();
+        var userPhone = $("#userPhone").val();
+		var userEmail = $("#userEmail").val();
+		var userId = $("#userId").val();
+        var technicalReport = $("#technicalReport").val()==1?true:false;
+        var technicalEmail1 = $("#technicalEmail1").val();
+        var technicalEmail2 = $("#technicalEmail2").val();
+        var technicalEmail3 = $("#technicalEmail3").val();
+        var companyStatus = $("#companyStatus").val()==1?true:false;
+        var alarmSms = $("#alarmSms").val()==1?true:false;
+        var passwordControl = $("#passwordControl").val();
+        var userStatus = $("#userStatus").val()==1?true:false;
+        var companyVehicleProgramming = $("#companyVehicleProgramming").val()==1?true:false;
+        var companyGroupName = $("#companyGroupName").val();
+        var accountingCode = $("#accountingCode").val();
+
+
+        if (companyCode == "" || companyDescription == ""|| userCode == ""  || userPassword == "" || userName == "" || userSurname == "" ) {
+            swal('Hata!', 'Lütfen yıldızlı(*) alanları boş bırakmayınız!!', 'error');
+            return;
+		}
+		if (userPhone!="" && isNaN(userPhone)) {
+			swal('Hata!', 'Lütfen telefon numarasını doğru giriniz..', 'error');
+			return;
+		}
+		if (userEmail != "" && !(userEmail.includes('@@'))) {
+			swal('Hata!', 'Lütfen E-mail"i doğru giriniz...', 'error');
+			return;
+		}
+		if (technicalEmail1 != "" && !(technicalEmail1.includes('@@'))) {
+			swal('Hata!', 'Lütfen E-mail"i doğru giriniz...', 'error');
+			return;
+		}
+		if (technicalEmail2 != "" && !(technicalEmail2.includes('@@'))) {
+			swal('Hata!', 'Lütfen E-mail"i doğru giriniz...', 'error');
+			return;
+		}
+		if (technicalEmail3 != "" && !(technicalEmail3.includes('@@'))) {
+			swal('Hata!', 'Lütfen E-mail"i doğru giriniz...', 'error');
+			return;
+        }
+
+
+		var canSave = false;
+
+		if (userCode.length >= 3) {
+			if (id == 0) {
+				$.ajax({
+					url: '@Url.Action("CheckIfUserExist", "Company")',
+					type: 'POST',
+					dataType: 'json',
+					async: false,
+					data: {
+						"_userCode": userCode
+					},
+					success: function (data) {
+						if (data) {
+							swal('Hata!', 'User içeride var', 'error');
+							canSave = false;
+						}
+						else {
+							canSave = true;
+						}
+					},
+					error: function (err) {
+						swal('Hata!', 'Lütfen geçerli yetkili kodu giriniz !', 'error');
+					}
+				});
+			}
+			else {
+				canSave = true;
+			}
+		}
+
+		if (!canSave) {
+			return;
+		}
+
+         $.ajax({
+            url: '@Url.Action("SaveCompany", "Company")',
+            type: 'POST',
+            dataType: 'json',
+             data: {
+                "_id" : id,
+                "_mainCompanyId": mainCompanyId,
+                "_companyTypeId": companyTypeId,
+                "_companyPartnerId": companyPartnerId,
+                "_platformId": platformId,
+                "_distributorId": distributorId,
+                "_sectorId": sectorId,
+                "_userId": userId,
+                "_companyReportId": companyReportId,
+                "_companyCode": companyCode,
+                "_companyDescription": companyDescription,
+                "_address1": address1,
+				 "_phone": phone,
+                "_userCode": userCode,
+                "_userPassword": userPassword,
+                "_userName": userName,
+                "_userSurname": userSurname,
+                "_userPhone": userPhone,
+                "_userEmail": userEmail,
+                "_technicalReport": technicalReport,
+                "_technicalEmail1": technicalEmail1,
+                "_technicalEmail2": technicalEmail2,
+                "_technicalEmail3": technicalEmail3,
+                "_companyStatus": companyStatus,
+                "_alarmSms": alarmSms,
+                "_passwordControl": passwordControl,
+                "_userStatus": userStatus,
+                "_companyVehicleProgramming": companyVehicleProgramming,
+                "_companyGroupName": companyGroupName,
+                "_accountingCode": accountingCode
+            },
+            success: function (data) {
+                if (data) {
+                    swal('Başarılı!', 'Şirket Kaydedildi!', 'success')
+                        .then((value) => {
+                            window.location.reload();
+                        });
+                }
+            }
+        })
+	}
+	function SaveUser() {
+		debugger;
+	var compUserUserId = $("#compUserUserId").val();
+	var compUserUserCode = $("#compUserUserCode").val();
+	var compUserName = $("#compUserName").val();
+	var compUserSurname = $("#compUserSurname").val();
+	var compUserTelephone = $("#compUserTelephone").val();
+	var compUserMail = $("#compUserMail").val();
+	var compUserpassword = $("#compUserpassword").val();
+	var compUserstatus = $("#compUserstatus").val();
+	var companyIdForSavingUser = $("#companyIdForSavingUser").val();
+	if (compUserUserCode == ""   ||   compUserpassword=="" ) {
+		swal("Hata !", " Lutfen yıldızlı alanları doldurunuz !", "error");
+		return;
+        }
+    if (compUserTelephone!="" && isNaN(compUserTelephone)) {
+			swal('Hata!', 'Lütfen telefon numarasını doğru giriniz..', 'error');
+			return;
+		}
+	if (compUserMail != "" && !(compUserMail.includes('@@'))) {
+			swal('Hata!', 'Lütfen E-mail"i doğru giriniz...', 'error');
+			return;
+        } 
+        var canSave = false;
+
+        if (compUserUserCode.length >= 3) {
+			if (compUserUserId == 0) {
+				$.ajax({
+					url: '@Url.Action("CheckIfUserExist", "Company")',
+					type: 'POST',
+					dataType: 'json',
+					async: false,
+					data: {
+						"_userCode": compUserUserCode
+					},
+					success: function (data) {
+						if (data) {
+							swal('Hata!', 'User içeride var', 'error');
+							canSave = false;
+						}
+						else {
+							canSave = true;
+						}
+					},
+					error: function (err) {
+						swal('Hata!', 'Lütfen geçerli yetkili kodu giriniz !', 'error');
+					}
+				});
+			}
+			else {
+				canSave = true;
+			}
+		}
+		if (!canSave) {
+			return;
+		}
+
+	$.ajax({
+		url: '@Url.Action("SaveUser", "Company")',
+        type: 'POST',
+        dataType: 'json',
+		data: {
+		"_compUserUserId": compUserUserId,
+		"_compUserUserCode": compUserUserCode,
+		"_compUserName": compUserName,
+		"_compUserSurname": compUserSurname,
+		"_compUserTelephone": compUserTelephone,
+		"_compUserMail": compUserMail,
+		"_compUserpassword": compUserpassword,
+	    "_compUserstatus": compUserstatus,
+	    "_companyIdForSavingUser": companyIdForSavingUser
+		},
+
+	success: function (data) {
+        if (data) {
+            swal('Başarılı!', 'Kullanıcı Kaydedildi!', 'success')
+                .then((value) => {
+                    window.location.reload();
+                });
+        }
+        else {
+            swal('Hata!', 'Lütfen tekrar deneyiniz. ', 'error');
+            return;
+        }
+		  }
+		});
+	}
+
+
+	function getList(isDefault = false) {
+		$("#tableContainer").html('');
+        $("#loadingContainer").show();
+        firmaKodu = $("#firmaKodu").val();
+        firmaTipi = $("#firmaTipi").val();
+        kullanimDurumu = $("#kullanimDurumu").val();
+
+        $.ajax({
+            url: '@Url.Action("GetCompanyList", "Company")',
+            type: 'POST',
+            dataType: 'html',
+            data: {
+                "_firmaKodu": (isDefault ? "" : firmaKodu),
+                "_firmaTipi": (isDefault ? "0" : firmaTipi),
+                "_firmaTipi": (isDefault ? "0" : firmaTipi),
+                "_kullanimDurumu": (isDefault ? "-1" : kullanimDurumu),
+            },
+			success: function (data) {
+                $("#loadingContainer").hide();
+                $("#tableContainer").html(data);
+            }
+        });
+	}
+
+	function GetUserList(id) {
+		$("#exampleModalUserInformation").modal('show');
+        $("#loadingContainer").show();
+        $.ajax({
+            url: '@Url.Action("GetUserList", "Company")',
+            type: 'POST',
+            dataType: 'html',
+            data: {
+                "_id" :id
+            },
+			success: function (data) {
+                $("#loadingContainer").hide();
+				$("#userTableContainer").html(data);
+				$("#companyIdForSavingUser").val(id);
+            }
+        });
+	}
+	function GetUserIdForDisplaying(id) {
+		 $.ajax({
+            url: '@Url.Action("GetUserIdForDisplaying", "Company")',
+            type: 'POST',
+            dataType: 'json',
+             data: {
+                "_id" : id
+            },
+			 success: function (data) {
+				 $("#userFormModal").modal('show');
+				 $("#compUserUserId").val(data["Id"]);
+				 $("#compUserUserCode").val(data["UserCode"]);
+				 $("#compUserName").val(data["Name"]);
+				 $("#compUserSurname").val(data["Surname"]);
+				 $("#compUserTelephone").val(data["Telephone"]);
+				 $("#compUserMail").val(data["Mail"]);
+				 $("#compUserpassword").val(data["Password"]);
+				 $("#compUserstatus").val(data["Status"]);
+            }
+        })
+	}
+	function DeleteUser(id) {
+		swal({
+				title: "Emin misiniz?",
+				text: "Bu kullanıcıyı silerseniz geri alamayacaksınız!!",
+				icon: "warning",
+				buttons: [
+					'Hayır, iptal et!',
+					'Evet, eminim!'
+				],
+				dangerMode: true,
+			}).then(function (isConfirm) {
+				if (isConfirm) {
+					$.ajax({
+						url: '@Url.Action("DeleteUser", "Company")',
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							"_id": id
+						},
+						success: function (data) {
+							if (data) {
+								swal('Başarılı!', 'Kullanıcı Silindi!', 'success')
+									.then((value) => {
+										window.location.reload();
+									});
+							}
+
+						}
+					});
+				}
+			})
+	}
+
+
+	function GetCompanyByIdForDisplaying(id) {
+		debugger;
+		$.ajax({
+				url: '@Url.Action("GetCompanyByIdForDisplaying", "Company")',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+				"_id": id
+			 },
+			success: function (data) {
+			console.log(data);
+					$("#exampleModalCenter").modal('show');
+					$("#id").val(data["Id"]);
+					$("#userId").val(data["UserId"]);
+					$("#userCode").val(data["UserCode"]);
+					$("#userName").val(data["UserName"]);
+					$("#userSurname").val(data["UserSurname"]);
+					$("#userPassword").val(data["UserPassword"]);
+					$("#userPhone").val(data["UserTelephone"]);
+					$("#userEmail").val(data["UserEmail"]);
+					$("#mainCompanyId").val(data["MainCompanyId"]);
+					$("#companyTypeId").val(data["CompanyTypeId"]);
+					$("#companyPartnerId").val(data["CompanyPartnerId"]);
+					$("#platformId").val(data["PlatformId"]);
+					$("#distributorId").val(data["DistributorId"]);
+					$("#sectorId").val(data["SectorId"]);
+					$("#companyReportId").val(data["CompanyReportId"]);
+					$("#companyCode").val(data["CompanyCode"]);
+					$("#companyDescription").val(data["CompanyDescription"]);
+					$("#address1").val(data["Address1"]);
+					$("#phone").val(data["Phone"]);
+					$("#technicalReport").val(data["TechnicalReport"]== true ? 1: 0);
+					$("#technicalEmail1").val(data["TechnicalEmail1"]);
+					$("#technicalEmail2").val(data["TechnicalEmail2"]);
+					$("#technicalEmail3").val(data["TechnicalEmail3"]);
+					$("#companyStatus").val(data["CompanyStatus"] == true ? 1: 0);
+					$("#alarmSms").val(data["AlarmSms"]== true ? 1: 0);
+					$("#passwordControl").val(data["PasswordControl"]);
+					$("#userStatus").val(data["UserStatus"] == true ? 1: 0);
+					$("#companyVehicleProgramming").val(data["CompanyVehicleProgramming"]== true ? 1: 0);
+					$("#companyGroupName").val(data["CompanyGroupName"]);
+					$("#accountingCode").val(data["AccountingCode"]);
+           		 }
+			});
+	}
+	function DeleteCompany(id) {
+			swal({
+				title: "Emin misiniz?",
+				text: "Bu şirketi silerseniz geri alamayacaksınız!!",
+				icon: "warning",
+				buttons: [
+					'Hayır, iptal et!',
+					'Evet, eminim!'
+				],
+				dangerMode: true,
+			}).then(function (isConfirm) {
+				if (isConfirm) {
+					$.ajax({
+						url: '@Url.Action("DeleteCompany", "Company")',
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							"_id": id
+						},
+						success: function (data) {
+							if (data) {
+								swal('Başarılı!', 'Şirket Silindi!', 'success')
+									.then((value) => {
+										window.location.reload();
+									});
+							}
+
+						}
+					});
+				}
+			})
+	}
+
+</script>  @*CRUD OPERATİONS*@
+<script>
+	@*function uploadFile()
+			{
+				var formData = new FormData();
+				formData.append('file', $('#myfile')[0].files[0]); // myFile is the input type="file" control
+
+			var _url = '@Url.Action("UploadFile", "Company")';
+
+			$.ajax({
+				url: _url,
+				type: 'POST',
+				data: formData,
+				processData: false,  // tell jQuery not to process the data
+				contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    if (result) {
+					   swal('Başarılı!', 'Şirketler Kaydedildi!', 'success')
+                      .then((value) => {
+                         window.location.reload();
+                      });
+					}
+					   else {
+						   swal('Hata!', 'Dosya Kaydedilemedi ...', 'error');
+					   }
+				},
+				error: function (jqXHR) {
+				},
+				complete: function (jqXHR, status) {
+				}
+			});
+    }*@
+
+    $(document).ready(function () {
+        $("#fileUploader").change(function (evt) {
+            var selectedFile = evt.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var data = event.target.result;
+                var workbook = XLSX.read(data, {
+                    type: 'binary'
+                });
+                workbook.SheetNames.forEach(function (sheetName) {
+
+                    var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                    var json_object = JSON.stringify(XL_row_object);
+
+                    $.ajax({
+                        url: '@Url.Action("ImportFile", "Company")',
+                        type: 'POST',
+                        dataType: 'json',
+                        async: false,
+                        data: {
+                            "_excelData": json_object
+                        },
+                        success: function (data) {
+                            alert(data);
+                        }
+                    });
+                })
+            };
+
+            reader.onerror = function (event) {
+                console.error("File could not be read! Code " + event.target.error.code);
+            };
+
+            reader.readAsBinaryString(selectedFile);
+        });
+    });
+
+</script>  @*uploadFile*@
+
+
+
